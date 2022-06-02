@@ -23,7 +23,7 @@ const style = {
 };
 
 
-const AddUser = ({handleOpen, setOpen, open}) => {
+const AddUser = ({handleOpen, setOpen, open,setRestartList}) => {
     const handleClose = () => setOpen(false);
 
     return (
@@ -45,7 +45,9 @@ const AddUser = ({handleOpen, setOpen, open}) => {
                             <BackspaceIcon onClick={handleClose}/>
                         </div>
                         <div className='modalInput'>
-                            <AddUserInput handleClose={handleClose}/>
+                            <AddUserInput
+                                setRestartList={setRestartList}
+                                handleClose={handleClose}/>
                         </div>
                     </Box>
                 </Fade>

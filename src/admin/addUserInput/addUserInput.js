@@ -9,7 +9,7 @@ import {userReduce, users} from "../userAdd";
 import './addUserInput.css'
 import axios from "axios";
 
-const AddUserInput = ({handleClose}) => {
+const AddUserInput = ({handleClose,setRestartList}) => {
 
     const [group, setGroup] = React.useState('');
     const [department, setDepartment] = React.useState('');
@@ -44,8 +44,15 @@ const AddUserInput = ({handleClose}) => {
     }
 
     const addUserAxios = () => {
-        axios.post('http://localhost:8088/admin/users/create', user)
+        const request = {
+            ...user,
+            "numbers":[user.numbers],
+            "emails":[user.emails],
+        }
+        axios.post('http://localhost:8088/admin/users/create', request)
             .then((resp) => {
+                handleClose()
+                setRestartList('restartList')
             }).catch((error) => {
             console.log(error)
         })
@@ -142,18 +149,18 @@ const AddUserInput = ({handleClose}) => {
                     label="Имя"
                     variant="outlined"/>
                 <TextField
-                    onChange={(e) => {changeObject(e)
-                        // dispatchUsers({
-                        //         payload: {
-                        //             name: e.target.name,
-                        //             value: Number(e.target.value)
-                        //         }
-                        //     }
-                        // )
+                    onChange={(e) => {
+                        dispatchUsers({
+                                payload: {
+                                    name: e.target.name,
+                                    value: e.target.value
+                                }
+                            }
+                        )
                     }}
                     name='numbers'
                     value={user.numbers}
-                    type='tel'
+                    type='phone'
                     id="outlined-basic"
                     label="Телефон"
                     variant="outlined"/>

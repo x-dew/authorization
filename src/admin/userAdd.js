@@ -9,7 +9,7 @@ export const users = {
     group_id: null,
     department_id: null,
     position_id: null,
-    numbers: '',
+    numbers: null,
     emails: ''
 }
 

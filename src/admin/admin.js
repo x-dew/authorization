@@ -22,6 +22,8 @@ const Admin = () => {
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
 
+    const [restartList,setRestartList] = useState('')
+    console.log(restartList)
 
     useEffect(() => {
         axios.post(`http://localhost:8088/admin/users/list`, {
@@ -31,7 +33,7 @@ const Admin = () => {
         }).catch((error) => {
             console.log(error)
         })
-    }, [])
+    },[restartList])
 
     return (
         <div className='admin'>
@@ -72,6 +74,7 @@ const Admin = () => {
                 </div>
             </div>
              <AddUser
+                 setRestartList={setRestartList}
                 handleOpen={handleOpen}
                 open={open}
                 setOpen={setOpen}/>
