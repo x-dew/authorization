@@ -32,6 +32,7 @@ const AddUserInput = ({handleClose}) => {
     };
 
     const [user, dispatchUsers] = useReducer(userReduce, users)
+    console.log(typeof user.numbers)
     const changeObject = (e) => {
         dispatchUsers({
                 payload: {
@@ -45,7 +46,6 @@ const AddUserInput = ({handleClose}) => {
     const addUserAxios = () => {
         axios.post('http://localhost:8088/admin/users/create', user)
             .then((resp) => {
-                console.log(resp)
             }).catch((error) => {
             console.log(error)
         })
@@ -73,7 +73,6 @@ const AddUserInput = ({handleClose}) => {
             token: localStorage.getItem('access_token'),
         }).then((positions) => {
             setJobTitleList(positions.data.positions)
-            console.log(positions)
         }).catch((error) => {
             console.log(error)
         })
@@ -143,10 +142,18 @@ const AddUserInput = ({handleClose}) => {
                     label="Имя"
                     variant="outlined"/>
                 <TextField
-                    onChange={(e) => changeObject(e)}
+                    onChange={(e) => {changeObject(e)
+                        // dispatchUsers({
+                        //         payload: {
+                        //             name: e.target.name,
+                        //             value: Number(e.target.value)
+                        //         }
+                        //     }
+                        // )
+                    }}
                     name='numbers'
                     value={user.numbers}
-                    type='phone'
+                    type='tel'
                     id="outlined-basic"
                     label="Телефон"
                     variant="outlined"/>
@@ -175,7 +182,7 @@ const AddUserInput = ({handleClose}) => {
                     >
                         {
                             groupList.map((value,index) => {
-                                return <MenuItem key={index} value={value.name}>{value.name}</MenuItem>
+                                return <MenuItem key={index} value={value.id}>{value.name}</MenuItem>
                             })
                         }
 
@@ -196,7 +203,7 @@ const AddUserInput = ({handleClose}) => {
                     >
                         {
                             departmentList.map((value,index) => {
-                                return  <MenuItem key={index} value={value.name}>{value.name}</MenuItem>
+                                return  <MenuItem key={index} value={value.id}>{value.name}</MenuItem>
                             })
                         }
                     </Select>
@@ -216,7 +223,7 @@ const AddUserInput = ({handleClose}) => {
                     >
                         {
                             jobTitleList.map((value,index) => {
-                                return  <MenuItem key={index} value={value.name}>{value.name}</MenuItem>
+                                return  <MenuItem key={index} value={value.id}>{value.name}</MenuItem>
                             })
                         }
                     </Select>

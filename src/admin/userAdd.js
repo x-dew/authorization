@@ -5,10 +5,10 @@ export const users = {
     login: "",
     pwd: "",
     name: "",
-    role: "",
-    group_id: '',
-    department_id: '',
-    position_id: 'null',
+    role: "user",
+    group_id: null,
+    department_id: null,
+    position_id: null,
     numbers: '',
     emails: ''
 }
