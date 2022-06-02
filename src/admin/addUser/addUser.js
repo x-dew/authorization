@@ -45,7 +45,7 @@ const AddUser = ({handleOpen, setOpen, open}) => {
                             <BackspaceIcon onClick={handleClose}/>
                         </div>
                         <div className='modalInput'>
-                            <AddUserInput/>
+                            <AddUserInput handleClose={handleClose}/>
                         </div>
                     </Box>
                 </Fade>

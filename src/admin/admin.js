@@ -57,8 +57,8 @@ const Admin = () => {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {userBlock.map((value) => (
-                                    <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                {userBlock.map((value,index) => (
+                                    <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                     >
                                         <TableCell>{value.id}</TableCell>
                                         <TableCell>{value.login}</TableCell>

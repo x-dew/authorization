@@ -1,4 +1,4 @@
-import React, {useReducer, useState} from 'react';
+import React, {useEffect, useReducer, useState} from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import InputLabel from '@mui/material/InputLabel';
@@ -7,13 +7,19 @@ import FormControl from '@mui/material/FormControl';
 import Select, {SelectChangeEvent} from '@mui/material/Select';
 import {userReduce, users} from "../userAdd";
 import './addUserInput.css'
+import axios from "axios";
 
-const AddUserInput = () => {
+const AddUserInput = ({handleClose}) => {
 
     const [group, setGroup] = React.useState('');
     const [department, setDepartment] = React.useState('');
     const [jobTitle, setJobTitle] = React.useState('');
     const [buttonAction, setButtonAction] = useState('user')
+
+    const [groupList, setGroupList] = useState([])
+    const [departmentList, setDepartmentList] = useState([])
+    const [jobTitleList,setJobTitleList] = useState([])
+
 
     const handleChangeGroup = (event: SelectChangeEvent, name) => {
         setGroup(event.target.value);
@@ -26,7 +32,6 @@ const AddUserInput = () => {
     };
 
     const [user, dispatchUsers] = useReducer(userReduce, users)
-    console.log(user)
     const changeObject = (e) => {
         dispatchUsers({
                 payload: {
@@ -37,17 +42,54 @@ const AddUserInput = () => {
         )
     }
 
+    const addUserAxios = () => {
+        axios.post('http://localhost:8088/admin/users/create', user)
+            .then((resp) => {
+                console.log(resp)
+            }).catch((error) => {
+            console.log(error)
+        })
+    }
+
+    useEffect(() => {
+
+        axios.post('http://localhost:8088/admin/groups/list', {
+            token: localStorage.getItem('access_token'),
+        }).then((groups) => {
+            setGroupList(groups.data.groups)
+        }).catch((error) => {
+            console.log(error)
+        })
+
+        axios.post('http://localhost:8088/admin/departments/list', {
+            token: localStorage.getItem('access_token')
+        }).then((department) => {
+            setDepartmentList(department.data.departments)
+        }).catch((error) => {
+            console.log(error)
+        })
+
+        axios.post('http://localhost:8088/admin/positions/list', {
+            token: localStorage.getItem('access_token'),
+        }).then((positions) => {
+            setJobTitleList(positions.data.positions)
+            console.log(positions)
+        }).catch((error) => {
+            console.log(error)
+        })
+    }, [])
+
     return (
         <div className='addUserInput'>
             <div className='checkbox'>
                 <p>Роль</p>
                 <div className='checkboxButton'>
                     <button
-                        onClick={(e)=>{
+                        onClick={(e) => {
                             dispatchUsers({
-                                payload:{
-                                   name:e.target.name,
-                                   value:'user'
+                                payload: {
+                                    name: e.target.name,
+                                    value: 'user'
                                 }
                             })
                             setButtonAction('user')
@@ -56,11 +98,11 @@ const AddUserInput = () => {
                         className={buttonAction === 'user' ? 'buttonRole checkboxButtonAction' : 'buttonRole'}>Пользователь
                     </button>
                     <button
-                        onClick={(e)=>{
+                        onClick={(e) => {
                             dispatchUsers({
-                                payload:{
-                                    name:e.target.name,
-                                    value:'contact'
+                                payload: {
+                                    name: e.target.name,
+                                    value: 'contact'
                                 }
                             })
                             setButtonAction('contact')
@@ -124,16 +166,19 @@ const AddUserInput = () => {
                         labelId="demo-simple-select-standard-label"
                         id="demo-simple-select-standard"
                         value={group}
-                        onChange={(e)=> {
+                        onChange={(e) => {
                             handleChangeGroup(e)
                             changeObject(e)
                         }}
                         label="Age"
                         name='group_id'
                     >
-                        <MenuItem value={'Группа'}>Группа</MenuItem>
-                        <MenuItem value={'Департамент'}>Департамент</MenuItem>
-                        <MenuItem value={'Должность'}>Должность</MenuItem>
+                        {
+                            groupList.map((value,index) => {
+                                return <MenuItem key={index} value={value.name}>{value.name}</MenuItem>
+                            })
+                        }
+
                     </Select>
                 </FormControl>
                 <FormControl variant="standard" sx={{m: 1, minWidth: 120}}>
@@ -142,16 +187,18 @@ const AddUserInput = () => {
                         labelId="demo-simple-select-standard-label"
                         id="demo-simple-select-standard"
                         value={department}
-                        onChange={(e)=> {
+                        onChange={(e) => {
                             handleChangeDep(e)
                             changeObject(e)
                         }}
                         name='department_id'
                         label="Age"
                     >
-                        <MenuItem value={'Группа'}>Группа</MenuItem>
-                        <MenuItem value={'Департамент'}>Департамент</MenuItem>
-                        <MenuItem value={'Должность'}>Должность</MenuItem>
+                        {
+                            departmentList.map((value,index) => {
+                                return  <MenuItem key={index} value={value.name}>{value.name}</MenuItem>
+                            })
+                        }
                     </Select>
                 </FormControl>
                 <FormControl variant="standard" sx={{m: 1, minWidth: 120}}>
@@ -160,18 +207,29 @@ const AddUserInput = () => {
                         labelId="demo-simple-select-standard-label"
                         id="demo-simple-select-standard"
                         value={jobTitle}
-                        onChange={(e)=> {
+                        onChange={(e) => {
                             handleChangeJob(e)
                             changeObject(e)
                         }}
                         label="Age"
                         name='position_id'
                     >
-                        <MenuItem value={'Группа'}>Группа</MenuItem>
-                        <MenuItem value={'Департамент'}>Департамент</MenuItem>
-                        <MenuItem value={'Должность'}>Должность</MenuItem>
+                        {
+                            jobTitleList.map((value,index) => {
+                                return  <MenuItem key={index} value={value.name}>{value.name}</MenuItem>
+                            })
+                        }
                     </Select>
                 </FormControl>
+            </div>
+            <div className='addButtonUser'>
+                <button onClick={handleClose} className='buttonRole'>Отмена</button>
+                <button
+                    style={{background: 'green', color: 'white'}}
+                    className='buttonRole'
+                    onClick={addUserAxios}
+                >Добавить
+                </button>
             </div>
         </div>
 

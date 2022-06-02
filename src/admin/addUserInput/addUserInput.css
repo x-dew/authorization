@@ -42,6 +42,11 @@
     color:white;
 }
 
+.addButtonUser{
+    display: flex;
+    justify-content: end;
+}
+
 
 
 
