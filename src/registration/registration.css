@@ -1,0 +1,13 @@
+.registration Link{
+    display: flex;
+    justify-content: end;
+}
+
+
+.registration h2{
+    text-align: right;
+    margin-right: 50px;
+    text-decoration: underline;
+    color:blue;
+    margin-top: 0;
+}

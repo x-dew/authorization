@@ -1,0 +1,25 @@
+.header{
+    max-width: 100%;
+    width:100%;
+    min-height: 120px;
+}
+.header h1{
+    font-family: cursive;
+    text-align: center;
+    font-size: 80px;
+    margin:0;
+}
+
+.css-e53awj-MuiStack-root {
+    margin-right: 20px;
+}
+.css-hyum1k-MuiToolbar-root{
+    min-height: 100px!important;
+    align-items: flex-start!important;
+    padding-top:20px;
+    background-size: cover;
+    background-position-x: center;
+    background-position-y: center;
+    background-repeat: no-repeat;
+    background-image: url("../image/free-png.ru-174.png");
+}

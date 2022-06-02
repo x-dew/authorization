@@ -1,0 +1,38 @@
+.admin {
+    background-color: #c8cdd1;
+    height: 100vw;
+    padding-top: 50px;
+}
+
+.admin .css-hyum1k-MuiToolbar-root {
+    background-image: none;
+}
+
+.css-ancrnh-MuiButtonBase-root-MuiIconButton-root {
+    padding-top: 0!important;
+}
+
+.css-1ygcj2i-MuiTableCell-root{
+    text-align: start!important;
+    font-weight: 700!important;
+}
+
+.css-177gid-MuiTableCell-root{
+    text-align: start!important;
+}
+
+.userBlock{
+    background-color: white;
+    width: 50%;
+    margin: 0 auto;
+    padding: 10px 30px 20px 30px;
+}
+
+.userBlock h2 {
+    text-align: start;
+}
+.userBlockHeader{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}

@@ -1,0 +1,49 @@
+.css-1sumxir-MuiFormLabel-root-MuiInputLabel-root {
+    font-weight: 1000 !important;
+    color: black!important;
+}
+.userSelect{
+    margin-top: 30px;
+}
+.css-1869usk-MuiFormControl-root {
+    width: 100%!important;
+    margin-left: 0!important;
+    margin-bottom: 20px!important;
+
+}
+
+.checkbox{
+    display: flex;
+    align-items: center;
+}
+
+.checkboxButton{
+    margin-left: 20px;
+}
+
+.checkbox p{
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.buttonRole{
+    color: #282c34;
+    background-color: transparent;
+    padding: 15px;
+    border:1px solid #cccccc;
+    border-radius: 5px;
+    margin-right: 10px;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.checkboxButtonAction{
+    background-color: green;
+    color:white;
+}
+
+
+
+
+
+
