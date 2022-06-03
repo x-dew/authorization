@@ -12,6 +12,7 @@ import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import AddUser from "./addUser/addUser";
+import {logDOM} from "@testing-library/react";
 
 
 
@@ -23,7 +24,6 @@ const Admin = () => {
     const handleOpen = () => setOpen(true);
 
     const [restartList,setRestartList] = useState('')
-    console.log(restartList)
 
     useEffect(() => {
         axios.post(`http://localhost:8088/admin/users/list`, {
@@ -35,17 +35,33 @@ const Admin = () => {
         })
     },[restartList])
 
+    const deleteUser=()=>{
+        axios.delete(`http://localhost:8088/admin/users/217`,{
+            data:{
+                token: localStorage.getItem('access_token')
+            }
+        }).then((del)=>{
+            setRestartList('click')
+            console.log(del)})
+            .catch((error)=>{
+                console.log(error)
+            })
+    }
+
+
     return (
         <div className='admin'>
             <div className='userBlock'>
                 <div className='userBlockHeader'>
                     <h2>Пользователи</h2>
-                    <Stack onClick={handleOpen} direction="row" spacing={2}>
-                        <Button   variant="contained" color="success">
+                    <Stack  direction="row" spacing={2}>
+                        <Button  onClick={handleOpen} variant="contained" color="success">
                             Добавить
                         </Button>
+                        <Button  onClick={deleteUser} style={{background:"red"}}  variant="contained" >
+                            Удалить
+                        </Button>
                     </Stack>
-
                 </div>
                 <div className='userTable'>
                     <TableContainer component={Paper}>
@@ -60,7 +76,7 @@ const Admin = () => {
                             </TableHead>
                             <TableBody>
                                 {userBlock.map((value,index) => (
-                                    <TableRow key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                    <TableRow onClick={()=>(console.log(value.id))} key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                     >
                                         <TableCell>{value.id}</TableCell>
                                         <TableCell>{value.login}</TableCell>
