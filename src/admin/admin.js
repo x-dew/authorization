@@ -22,8 +22,10 @@ const Admin = () => {
     const [userBlock,setUserBlock] = useState([])
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
+    const [restartList,setRestartList] = useState(1)
+    const [userChangeId, setUserChangeId] = useState('')
+    console.log(userChangeId)
 
-    const [restartList,setRestartList] = useState('')
 
     useEffect(() => {
         axios.post(`http://localhost:8088/admin/users/list`, {
@@ -35,18 +37,7 @@ const Admin = () => {
         })
     },[restartList])
 
-    const deleteUser=()=>{
-        axios.delete(`http://localhost:8088/admin/users/217`,{
-            data:{
-                token: localStorage.getItem('access_token')
-            }
-        }).then((del)=>{
-            setRestartList('click')
-            console.log(del)})
-            .catch((error)=>{
-                console.log(error)
-            })
-    }
+
 
 
     return (
@@ -55,11 +46,11 @@ const Admin = () => {
                 <div className='userBlockHeader'>
                     <h2>Пользователи</h2>
                     <Stack  direction="row" spacing={2}>
-                        <Button  onClick={handleOpen} variant="contained" color="success">
+                        <Button  onClick={()=> {
+                            handleOpen()
+                            setAddUser('addUser')
+                        }} variant="contained" color="success">
                             Добавить
-                        </Button>
-                        <Button  onClick={deleteUser} style={{background:"red"}}  variant="contained" >
-                            Удалить
                         </Button>
                     </Stack>
                 </div>
@@ -76,7 +67,17 @@ const Admin = () => {
                             </TableHead>
                             <TableBody>
                                 {userBlock.map((value,index) => (
-                                    <TableRow onClick={()=>(console.log(value.id))} key={index} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                    <TableRow
+                                        style={{cursor:'pointer'}}
+                                        onClick={()=> {
+                                            console.log(value.id)
+                                            setUserChangeId(value.id)
+                                            handleOpen()
+                                            setAddUser('userChange')
+
+                                        }}
+                                        key={index}
+                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                     >
                                         <TableCell>{value.id}</TableCell>
                                         <TableCell>{value.login}</TableCell>
@@ -90,10 +91,13 @@ const Admin = () => {
                 </div>
             </div>
              <AddUser
+                 userChangeId={userChangeId}
+                 addUser={addUser}
                  setRestartList={setRestartList}
                 handleOpen={handleOpen}
                 open={open}
-                setOpen={setOpen}/>
+                setOpen={setOpen}
+                 restartList={restartList}/>
         </div>
     )
 }

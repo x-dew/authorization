@@ -9,7 +9,7 @@ import {userReduce, users} from "../userAdd";
 import './addUserInput.css'
 import axios from "axios";
 
-const AddUserInput = ({handleClose,setRestartList}) => {
+const AddUserInput = ({handleClose,setRestartList,restartList}) => {
 
     const [group, setGroup] = React.useState('');
     const [department, setDepartment] = React.useState('');
@@ -32,7 +32,7 @@ const AddUserInput = ({handleClose,setRestartList}) => {
     };
 
     const [user, dispatchUsers] = useReducer(userReduce, users)
-    console.log(typeof user.numbers)
+
     const changeObject = (e) => {
         dispatchUsers({
                 payload: {
@@ -52,7 +52,7 @@ const AddUserInput = ({handleClose,setRestartList}) => {
         axios.post('http://localhost:8088/admin/users/create', request)
             .then((resp) => {
                 handleClose()
-                setRestartList('restartList')
+                setRestartList(restartList + 1)
             }).catch((error) => {
             console.log(error)
         })
@@ -150,13 +150,9 @@ const AddUserInput = ({handleClose,setRestartList}) => {
                     variant="outlined"/>
                 <TextField
                     onChange={(e) => {
-                        dispatchUsers({
-                                payload: {
-                                    name: e.target.name,
-                                    value: e.target.value
-                                }
-                            }
-                        )
+                        if(/^[0-9]?\d+$/.test(e.target.value)) {
+                            changeObject(e)
+                        }
                     }}
                     name='numbers'
                     value={user.numbers}

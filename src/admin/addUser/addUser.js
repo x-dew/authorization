@@ -7,6 +7,7 @@ import Button from '@mui/material/Button';
 import './addUser.css'
 import BackspaceIcon from '@mui/icons-material/Backspace';
 import AddUserInput from "../addUserInput/addUserInput";
+import UserChange from "../userChange/userChange";
 
 const style = {
     position: 'absolute',
@@ -23,7 +24,7 @@ const style = {
 };
 
 
-const AddUser = ({handleOpen, setOpen, open,setRestartList}) => {
+const AddUser = ({restartList, setOpen, open, setRestartList, addUser,userChangeId}) => {
     const handleClose = () => setOpen(false);
 
     return (
@@ -40,17 +41,31 @@ const AddUser = ({handleOpen, setOpen, open,setRestartList}) => {
                 }}
             >
                 <Fade in={open}>
-                    <Box className='modal' sx={style}>
+                    {addUser === 'addUser' ? <Box className='modal' sx={style}>
                         <div className='modalWindows'>
                             <h3>Добавление пользователя</h3>
                             <BackspaceIcon onClick={handleClose}/>
                         </div>
                         <div className='modalInput'>
                             <AddUserInput
+                                restartList={restartList}
+                                setRestartList={setRestartList}
+                                handleClose={handleClose}/>
+                        </div>
+                    </Box> : <Box className='modal' sx={style}>
+                        <div className='modalWindows'>
+                            <h3>Изменение данных пользователя</h3>
+                            <BackspaceIcon onClick={handleClose}/>
+                        </div>
+                        <div className='modalInput'>
+                            <UserChange
+                                restartList={restartList}
+                                userChangeId={userChangeId}
                                 setRestartList={setRestartList}
                                 handleClose={handleClose}/>
                         </div>
                     </Box>
+                    }
                 </Fade>
             </Modal>
         </div>
