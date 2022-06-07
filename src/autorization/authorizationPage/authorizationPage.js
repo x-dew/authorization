@@ -13,7 +13,6 @@ const AuthorizationPage = ({input}) => {
     const [authorization, dispatchAuthorization] = useReducer(reduce, signIn)
     const [errorAxios, setErrorAxios] = useState('')
     const [adminPage, setAdminPage] = useState('1')
-    const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
 
     const getAxios = () => {

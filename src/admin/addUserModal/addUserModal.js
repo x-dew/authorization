@@ -6,10 +6,10 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, {SelectChangeEvent} from '@mui/material/Select';
 import {userReduce, users} from "../userAdd";
-import './addUserInput.css'
+import './addUserModal.css'
 import axios from "axios";
 
-const AddUserInput = ({handleClose,setRestartList,restartList}) => {
+const AddUserModal = ({handleClose,setRestartList,restartList}) => {
 
     const [group, setGroup] = React.useState('');
     const [department, setDepartment] = React.useState('');
@@ -52,8 +52,9 @@ const AddUserInput = ({handleClose,setRestartList,restartList}) => {
         axios.post('http://localhost:8088/admin/users/create', request)
             .then((resp) => {
                 handleClose()
-                setRestartList(restartList + 1)
+                setRestartList(restartList = 1)
             }).catch((error) => {
+            setRestartList(restartList + 1)
             console.log(error)
         })
     }
@@ -64,6 +65,7 @@ const AddUserInput = ({handleClose,setRestartList,restartList}) => {
             token: localStorage.getItem('access_token'),
         }).then((groups) => {
             setGroupList(groups.data.groups)
+            console.log(groups.data.groups)
         }).catch((error) => {
             console.log(error)
         })
@@ -247,4 +249,4 @@ const AddUserInput = ({handleClose,setRestartList,restartList}) => {
 }
 
 
-export default AddUserInput
+export default AddUserModal

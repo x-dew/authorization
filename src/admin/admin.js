@@ -12,7 +12,8 @@ import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import AddUser from "./addUser/addUser";
-import {logDOM} from "@testing-library/react";
+import {useNavigate} from "react-router-dom";
+
 
 
 
@@ -21,10 +22,13 @@ const Admin = () => {
     const [addUser,setAddUser]=useState('')
     const [userBlock,setUserBlock] = useState([])
     const [open, setOpen] = React.useState(false);
+
     const handleOpen = () => setOpen(true);
+
     const [restartList,setRestartList] = useState(1)
     const [userChangeId, setUserChangeId] = useState('')
-    console.log(userChangeId)
+
+    const navigate = useNavigate();
 
 
     useEffect(() => {
@@ -33,6 +37,7 @@ const Admin = () => {
         }).then((res) => {
             setUserBlock(res.data.users)
         }).catch((error) => {
+            navigate("/authorization")
             console.log(error)
         })
     },[restartList])
@@ -70,7 +75,6 @@ const Admin = () => {
                                     <TableRow
                                         style={{cursor:'pointer'}}
                                         onClick={()=> {
-                                            console.log(value.id)
                                             setUserChangeId(value.id)
                                             handleOpen()
                                             setAddUser('userChange')

@@ -5,98 +5,106 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, {SelectChangeEvent} from '@mui/material/Select';
-import {userReduce, ChangeUser} from "../userAdd";
-import '../addUserInput/addUserInput.css'
+import '../addUserModal/addUserModal.css'
 import axios from "axios";
-import {reduce} from "../../reduce";
-import {object} from "joi";
 
 
 const UserChange = ({handleClose, setRestartList, userChangeId, restartList}) => {
+    const [user, setUser] = useState({
+        role: "",
+        login: "",
+        pwd: null,
+        name: "",
+        number: "",
+        email: "",
+        group: {},
+        department: {},
+        position: {}
+    })
+    const [groups, setGroups] = useState([])
+    const [departments, setDepartments] = useState([])
+    const [positions, setPositions] = useState([])
 
-    const data = {}
-    console.log(data)
-    const [changeData, dispatchChangeData] = useReducer(userReduce, ChangeUser)
 
-
-    const [group, setGroup] = React.useState('');
-    const [department, setDepartment] = React.useState('');
-    const [jobTitle, setJobTitle] = React.useState('');
     const [dataUser, setDataUser] = useState({})
-    console.log(dataUser)
-    const [number, setNumber] = useState([])
-    const [email, setEmail] = useState([])
-    const [groupData, setGroupData] = useState([])
-    const [departmentData, setDepartmentData] = useState([])
-    const [jobTitleData, setJobTitleData] = useState([])
-    const [roleData, setRoleData] = useState([])
+    const [arrayData, setArrayData] = useState({
+        group: [],
+        department: [],
+        jobTitle: [],
+        number: [],
+        email: [],
+        id: 0,
+        login: "",
+        name: "",
+        pwd: null,
+        role: "",
+        status: 0,
+    })
 
-    const [groupList, setGroupList] = useState([])
-    const [departmentList, setDepartmentList] = useState([])
-    const [jobTitleList, setJobTitleList] = useState([])
+    const [examination, setExamination] = useState('')
 
-    const dataUserChange = (e) => {
-    }
 
     const handleChangeGroup = (event: SelectChangeEvent, name) => {
-        console.log(event.target.value)
-        console.log(event.target)
-        setGroup(event.target.value);
+        setUser(user => {
+            return {...user, group: {id:event.target.value}}
+        })
     };
+
     const handleChangeDep = (event: SelectChangeEvent, name) => {
-        setDepartment(event.target.value);
+        setArrayData(userDataChange => {
+            return {...userDataChange, department: event.target.value}
+        })
     };
+
     const handleChangeJob = (event: SelectChangeEvent, name) => {
-        setJobTitle(event.target.value);
+        setArrayData(userDataChange => {
+            return {...userDataChange, positions: event.target.value}
+        })
     };
 
 
-    const changeUserData = () => {
+    const changeUserData = (e) => {
+        handleClose(e)
         const dataUsers = {
             ...dataUser,
-            "pwd":dataUser.pwd || null ,
-            "numbers": number,
-            "emails": email,
-            "role":dataUser.role.name,
+            "pwd": dataUser.pwd || null,
+            "numbers": arrayData.number,
+            "emails": arrayData.email,
+            "role": dataUser.role.name,
             "token": localStorage.getItem('access_token'),
         }
         axios.put(`http://localhost:8088/admin/users/${userChangeId}`, dataUsers
         ).then((resp) => {
             setRestartList(restartList + 1)
-            console.log(resp)
         }).catch((error) => {
+            setRestartList(restartList = 1)
             console.log(error)
         })
     }
 
-    const deleteUser = () => {
+    const deleteUser = (e) => {
+        handleClose(e)
         axios.delete(`http://localhost:8088/admin/users/${userChangeId}`, {
             data: {
                 token: localStorage.getItem('access_token')
             }
         }).then((del) => {
             setRestartList(restartList + 1)
-            console.log(del)
         })
             .catch((error) => {
                 console.log(error)
             })
     }
 
-
-
     useEffect(() => {
         axios.post(`http://localhost:8088/admin/users/${userChangeId}`, {
             token: localStorage.getItem('access_token')
         }).then((res) => {
-            console.log(res)
-            setDataUser(res.data)
-            setNumber(res.data.numbers.map(value => value.number))
-            setEmail(res.data.emails.map(value => value.email))
-            setGroupData(res.data.group.name)
-            setDepartmentData(res.data.department.name)
-            setJobTitleData(res.data.position.name)
-            setRoleData(res.data.role.name)
+            setUser({
+                ...res.data,
+                number: res.data.numbers && res.data.numbers[0].number || "",
+                email: res.data.emails && res.data.emails[0].email || "",
+            })
         })
             .catch((error) => {
                 console.log(error)
@@ -105,31 +113,32 @@ const UserChange = ({handleClose, setRestartList, userChangeId, restartList}) =>
 
     useEffect(() => {
 
-        axios.post('http://localhost:8088/admin/groups/list', {
-            token: localStorage.getItem('access_token'),
-        }).then((groups) => {
-            setGroupList(groups.data.groups)
-        }).catch((error) => {
-            console.log(error)
-        })
+        axios.post('http://localhost:8088/admin/groups/list', {token: localStorage.getItem('access_token'),})
+            .then(res => setGroups(res.data.groups))
+            .catch(error => console.log(error))
 
-        axios.post('http://localhost:8088/admin/departments/list', {
-            token: localStorage.getItem('access_token')
-        }).then((department) => {
-            setDepartmentList(department.data.departments)
-        }).catch((error) => {
-            console.log(error)
-        })
+        axios.post('http://localhost:8088/admin/departments/list', {token: localStorage.getItem('access_token'),})
+            .then(res => setDepartments(res.data.departments))
+            .catch(error => console.log(error))
 
-        axios.post('http://localhost:8088/admin/positions/list', {
-            token: localStorage.getItem('access_token'),
-        }).then((positions) => {
-            setJobTitleList(positions.data.positions)
-        }).catch((error) => {
-            console.log(error)
-        })
+        axios.post('http://localhost:8088/admin/positions/list', {token: localStorage.getItem('access_token'),})
+            .then(res => setPositions(res.data.positions))
+            .catch(error => console.log(error))
+
     }, [])
 
+
+    const userFunLogin = (e) => {
+        if (e.target.value === '') {
+            setRestartList(restartList = 1)
+            setExamination('no')
+        } else {
+            setExamination('yes')
+        }
+        setDataUser(userDataChange => {
+            return {...userDataChange, login: e.target.value}
+        })
+    }
 
     return (
         <div className='changeUserInput'>
@@ -137,16 +146,16 @@ const UserChange = ({handleClose, setRestartList, userChangeId, restartList}) =>
                 <p>Роль</p>
                 <div className='checkboxButton'>
                     <button
-                        className={roleData === 'user' ? 'buttonRole actionRole' : 'buttonRole'}
+                        className={arrayData.role === 'user' ? 'buttonRole actionRole' : 'buttonRole'}
                         style={{cursor: 'inherit'}}
                         name='role'
-                        disabled={roleData === 'contact'}
+                        disabled={arrayData.role === 'contact'}
                     >Пользователь
                     </button>
                     <button
-                        disabled={roleData === 'user'}
+                        disabled={arrayData.role === 'user'}
                         style={{cursor: 'inherit'}}
-                        className={roleData === 'contact' ? 'buttonRole actionRole' : 'buttonRole'}
+                        className={arrayData.role === 'contact' ? 'buttonRole actionRole' : 'buttonRole'}
                         name='role'
                     >Контакт
                     </button>
@@ -161,30 +170,24 @@ const UserChange = ({handleClose, setRestartList, userChangeId, restartList}) =>
                 autoComplete="off"
             >
                 <TextField
-                    onChange={(e) => {
-                        setDataUser(userDataChange => {
-                            return {...userDataChange, login: e.target.value}
-                        })
-                        dataUserChange(e)
-                    }
-                    }
+                    onChange={userFunLogin}
+                    className={examination === 'no' ? 'borderColorRed' : ''}
                     name='login'
                     id="outlined-basic"
-                    label='Логин'
-                    value={dataUser.login}
+                    label={examination === 'no' ? 'Придумайте логин' : 'Логин'}
+                    placeholder={examination === 'no' ? 'Придумайте логин' : ''}
+                    value={user.login}
                     variant="outlined"/>
                 <TextField
                     onChange={(e) => {
                         setDataUser(userDataChange => {
                             return {...userDataChange, pwd: e.target.value}
                         })
-                        dataUserChange(e)
-                    }
-                    }
+                    }}
                     name='pwd'
                     id="outlined-basic"
                     label='Пароль'
-                    value={dataUser.pwd}
+                    value={user.pwd}
                     variant="outlined"/>
                 <TextField
                     onChange={(e) => {
@@ -194,24 +197,33 @@ const UserChange = ({handleClose, setRestartList, userChangeId, restartList}) =>
                     }}
                     name='name'
                     id="outlined-basic"
-                    value={dataUser.name}
+                    value={user.name}
                     label='Имя'
                     variant="outlined"/>
                 <TextField
-                    onChange={(e) => setNumber(dataUser.numbers.map(value => {
-                        return value.number = e.target.value
-                    }))}
-                    value={number}
+                    onChange={(e) => setArrayData(userDataChange => {
+                        return {
+                            ...userDataChange, number: dataUser.emails.map(value => {
+                                return value.email = e.target.value
+                            })
+                        }
+                    })}
+                    value={user.number}
                     label='Номер'
                     name='numbers'
                     type='text'
                     id="outlined-basic"
                     variant="outlined"/>
                 <TextField
-                    onChange={(e) => setEmail(dataUser.emails.map(value => {
-                        return value.email = e.target.value
-                    }))}
-                    value={email}
+                    onChange={(e) => setArrayData(userDataChange => {
+                        return {
+                            ...userDataChange, email: dataUser.emails.map(value => {
+                                return value.email = e.target.value
+                            })
+                        }
+                    })
+                    }
+                    value={user.email}
                     label='Email'
                     name='emails'
                     type='email'
@@ -223,26 +235,20 @@ const UserChange = ({handleClose, setRestartList, userChangeId, restartList}) =>
                     <InputLabel
                         id="demo-simple-select-standard-label">Группа</InputLabel>
                     <Select
-                        value={group}
+                        value={user.group.id}
                         labelId="demo-simple-select-standard-label"
                         id="demo-simple-select-standard"
-                        onChange={(e) => {
-                            handleChangeGroup(e)
-                        }}
-                        onClick={(e) => {
-                            console.log(e)
+                        onChange={handleChangeGroup}
+                        /*onClick={(e) => {
                             setDataUser(userDataChange => {
-                                return {
-                                    ...userDataChange,
-                                    group: e.target.innerText
-                                }
+                                return {...userDataChange, group: e.target.innerText}
                             })
-                        }}
+                        }}*/
                         label="Age"
                         name='group_id'
                     >
                         {
-                            groupList.map((value, index) => {
+                            groups.map((value, index) => {
                                 return <MenuItem key={index} value={value.id}>{value.name}</MenuItem>
                             })
                         }
@@ -252,56 +258,41 @@ const UserChange = ({handleClose, setRestartList, userChangeId, restartList}) =>
                     <InputLabel
                         id="demo-simple-select-standard-label">Департамент</InputLabel>
                     <Select
-                        value={department}
+                        value={arrayData.department_id}
                         labelId="demo-simple-select-standard-label"
                         id="demo-simple-select-standard"
                         name='department_id'
-
                         label="Age"
-                        onChange={(e) => {
-                            handleChangeDep(e)
-                        }}
-                        onClick={(e) => {
+                        onChange={handleChangeDep}
+                        /*onClick={(e) => {
                             setDataUser(userChangeDep => {
-                                return {
-                                    ...userChangeDep,
-                                    department: e.target.innerText
-                                }
+                                return {...userChangeDep, department: e.target.innerText}
                             })
-                        }}
+                        }}*/
                     >
-                        {
-                            departmentList.map((value, index) => {
-                                return <MenuItem key={index} value={value.id}>{value.name}</MenuItem>
-                            })
-                        }
+                        {departments.map((value, index) => {
+                            return <MenuItem key={index} value={value.id}>{value.name}</MenuItem>
+                        })}
                     </Select>
                 </FormControl>
                 <FormControl variant="standard" sx={{m: 1, minWidth: 120}}>
                     <InputLabel
                         id="demo-simple-select-standard-label">Должность</InputLabel>
                     <Select
-                        value={jobTitle}
-                        onChange={(e) => {
-                            dataUserChange(e)
-                            handleChangeJob(e)
-                        }}
-                        onClick={(e) => {
+                        value={arrayData.position_id}
+                        onChange={handleChangeJob}
+                        /*onClick={(e) => {
                             setDataUser(userChangePos => {
-                                return {
-                                    ...userChangePos,
-                                    position: e.target.innerText
-
-                                }
+                                return {...userChangePos, position: e.target.innerText}
                             })
-                        }}
+                        }}*/
                         label="Age"
                         labelId="demo-simple-select-standard-label"
                         id="demo-simple-select-standard"
                         name='position_id'
                     >
                         {
-                            jobTitleList.map((value, index) => {
+                            positions.map((value, index) => {
                                 return <MenuItem key={index} value={value.id}>{value.name}</MenuItem>
                             })
                         }
@@ -312,16 +303,13 @@ const UserChange = ({handleClose, setRestartList, userChangeId, restartList}) =>
                 <button onClick={handleClose} className='buttonRole'>Отмена</button>
                 <button
                     style={{background: 'green', color: 'white'}}
-                    onClick={(e) => {
-                        handleClose(e)
-                        changeUserData()
-                    }} className='buttonRole'>Сохранить
+                    onClick={changeUserData}
+                    className='buttonRole'
+                    disabled={examination === 'no'}
+                >Сохранить
                 </button>
                 <button
-                    onClick={() => {
-                        deleteUser()
-                        handleClose()
-                    }}
+                    onClick={deleteUser}
                     style={{background: 'red', color: 'white'}}
                     className='buttonRole'
                 >Удалить

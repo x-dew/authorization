@@ -6,19 +6,6 @@ export const users = {
     pwd: "",
     name: "",
     role: "user",
-    group_id: '',
-    department_id: '',
-    position_id: '',
-    numbers: '',
-    emails: ''
-}
-
-export const ChangeUser ={
-    token: localStorage.getItem('access_token'),
-    login: "",
-    pwd: "",
-    name: "",
-    role: "user",
     group_id: null,
     department_id: null,
     position_id: null,

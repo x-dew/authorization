@@ -6,7 +6,7 @@ import Fade from '@mui/material/Fade';
 import Button from '@mui/material/Button';
 import './addUser.css'
 import BackspaceIcon from '@mui/icons-material/Backspace';
-import AddUserInput from "../addUserInput/addUserInput";
+import AddUserModal from "../addUserModal/addUserModal";
 import UserChange from "../userChange/userChange";
 
 const style = {
@@ -47,7 +47,7 @@ const AddUser = ({restartList, setOpen, open, setRestartList, addUser,userChange
                             <BackspaceIcon onClick={handleClose}/>
                         </div>
                         <div className='modalInput'>
-                            <AddUserInput
+                            <AddUserModal
                                 restartList={restartList}
                                 setRestartList={setRestartList}
                                 handleClose={handleClose}/>
