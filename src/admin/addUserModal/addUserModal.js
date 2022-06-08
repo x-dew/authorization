@@ -52,9 +52,10 @@ const AddUserModal = ({handleClose,setRestartList,restartList}) => {
         axios.post('http://localhost:8088/admin/users/create', request)
             .then((resp) => {
                 handleClose()
-                setRestartList(restartList = 1)
+                setRestartList(restartList + 1)
+                console.log(resp)
             }).catch((error) => {
-            setRestartList(restartList + 1)
+            setRestartList(restartList = 1)
             console.log(error)
         })
     }

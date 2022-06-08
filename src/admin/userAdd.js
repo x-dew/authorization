@@ -6,11 +6,11 @@ export const users = {
     pwd: "",
     name: "",
     role: "user",
-    group_id: null,
-    department_id: null,
-    position_id: null,
-    numbers: null,
-    emails: null
+    group_id: '',
+    department_id: '',
+    position_id: '',
+    numbers: '',
+    emails: ''
 }
 
 export const userReduce = (state, action) => {

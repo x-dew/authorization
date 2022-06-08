@@ -23,7 +23,6 @@ const AuthorizationPage = ({input}) => {
                 localStorage.setItem('access_token', response.data.auth.token)
                 localStorage.setItem('expires_in', response.data.auth.refresh_token_expired)
                 localStorage.setItem('refresh_token', response.data.auth.refresh_token)
-
                 setErrorAxios('')
                 setTimeout(() => {
                     navigate("/admin");

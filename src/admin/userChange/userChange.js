@@ -10,37 +10,23 @@ import axios from "axios";
 
 
 const UserChange = ({handleClose, setRestartList, userChangeId, restartList}) => {
+
     const [user, setUser] = useState({
         role: "",
         login: "",
         pwd: null,
         name: "",
-        number: "",
-        email: "",
-        group: {},
-        department: {},
-        position: {}
+        group: null,
+        department:null,
+        positions: null,
+        number: [],
+        email: [],
     })
     const [groups, setGroups] = useState([])
     const [departments, setDepartments] = useState([])
     const [positions, setPositions] = useState([])
 
-
     const [dataUser, setDataUser] = useState({})
-    const [arrayData, setArrayData] = useState({
-        group: [],
-        department: [],
-        jobTitle: [],
-        number: [],
-        email: [],
-        id: 0,
-        login: "",
-        name: "",
-        pwd: null,
-        role: "",
-        status: 0,
-    })
-
     const [examination, setExamination] = useState('')
 
 
@@ -51,25 +37,29 @@ const UserChange = ({handleClose, setRestartList, userChangeId, restartList}) =>
     };
 
     const handleChangeDep = (event: SelectChangeEvent, name) => {
-        setArrayData(userDataChange => {
+        setUser(userDataChange => {
             return {...userDataChange, department: event.target.value}
         })
     };
 
     const handleChangeJob = (event: SelectChangeEvent, name) => {
-        setArrayData(userDataChange => {
+        setUser(userDataChange => {
             return {...userDataChange, positions: event.target.value}
         })
     };
 
+    console.log(user.positions)
 
     const changeUserData = (e) => {
         handleClose(e)
         const dataUsers = {
             ...dataUser,
             "pwd": dataUser.pwd || null,
-            "numbers": arrayData.number,
-            "emails": arrayData.email,
+            "numbers": user.number,
+            "emails": user.email,
+            "group_id": user.group,
+            "department_id": user.department,
+            "position_id": user.positions,
             "role": dataUser.role.name,
             "token": localStorage.getItem('access_token'),
         }
@@ -100,16 +90,22 @@ const UserChange = ({handleClose, setRestartList, userChangeId, restartList}) =>
         axios.post(`http://localhost:8088/admin/users/${userChangeId}`, {
             token: localStorage.getItem('access_token')
         }).then((res) => {
-            setUser({
-                ...res.data,
-                number: res.data.numbers && res.data.numbers[0].number || "",
-                email: res.data.emails && res.data.emails[0].email || "",
+            setDataUser(res.data)
+            setUser(user=>{
+                return{
+                    ...user,
+                    number: res.data.numbers.map(value => value.number),
+                    email: res.data.emails.map(value => value.email),
+                    positions: res.data.position.id
+
+                }
             })
+            console.log(res)
         })
             .catch((error) => {
                 console.log(error)
             })
-    }, userChangeId)
+    }, [])
 
     useEffect(() => {
 
@@ -125,12 +121,11 @@ const UserChange = ({handleClose, setRestartList, userChangeId, restartList}) =>
             .then(res => setPositions(res.data.positions))
             .catch(error => console.log(error))
 
-    }, [])
+    }, [userChangeId])
 
 
     const userFunLogin = (e) => {
         if (e.target.value === '') {
-            setRestartList(restartList = 1)
             setExamination('no')
         } else {
             setExamination('yes')
@@ -139,6 +134,7 @@ const UserChange = ({handleClose, setRestartList, userChangeId, restartList}) =>
             return {...userDataChange, login: e.target.value}
         })
     }
+    console.log(dataUser.group)
 
     return (
         <div className='changeUserInput'>
@@ -146,16 +142,16 @@ const UserChange = ({handleClose, setRestartList, userChangeId, restartList}) =>
                 <p>Роль</p>
                 <div className='checkboxButton'>
                     <button
-                        className={arrayData.role === 'user' ? 'buttonRole actionRole' : 'buttonRole'}
+                        className={user.role === 'user' ? 'buttonRole actionRole' : 'buttonRole'}
                         style={{cursor: 'inherit'}}
                         name='role'
-                        disabled={arrayData.role === 'contact'}
+                        disabled={user.role === 'contact'}
                     >Пользователь
                     </button>
                     <button
-                        disabled={arrayData.role === 'user'}
+                        disabled={user.role === 'user'}
                         style={{cursor: 'inherit'}}
-                        className={arrayData.role === 'contact' ? 'buttonRole actionRole' : 'buttonRole'}
+                        className={user.role === 'contact' ? 'buttonRole actionRole' : 'buttonRole'}
                         name='role'
                     >Контакт
                     </button>
@@ -176,7 +172,7 @@ const UserChange = ({handleClose, setRestartList, userChangeId, restartList}) =>
                     id="outlined-basic"
                     label={examination === 'no' ? 'Придумайте логин' : 'Логин'}
                     placeholder={examination === 'no' ? 'Придумайте логин' : ''}
-                    value={user.login}
+                    value={dataUser.login}
                     variant="outlined"/>
                 <TextField
                     onChange={(e) => {
@@ -187,7 +183,7 @@ const UserChange = ({handleClose, setRestartList, userChangeId, restartList}) =>
                     name='pwd'
                     id="outlined-basic"
                     label='Пароль'
-                    value={user.pwd}
+                    value={dataUser.pwd}
                     variant="outlined"/>
                 <TextField
                     onChange={(e) => {
@@ -197,11 +193,11 @@ const UserChange = ({handleClose, setRestartList, userChangeId, restartList}) =>
                     }}
                     name='name'
                     id="outlined-basic"
-                    value={user.name}
+                    value={dataUser.name}
                     label='Имя'
                     variant="outlined"/>
                 <TextField
-                    onChange={(e) => setArrayData(userDataChange => {
+                    onChange={(e) => setUser(userDataChange => {
                         return {
                             ...userDataChange, number: dataUser.emails.map(value => {
                                 return value.email = e.target.value
@@ -215,7 +211,7 @@ const UserChange = ({handleClose, setRestartList, userChangeId, restartList}) =>
                     id="outlined-basic"
                     variant="outlined"/>
                 <TextField
-                    onChange={(e) => setArrayData(userDataChange => {
+                    onChange={(e) => setUser(userDataChange => {
                         return {
                             ...userDataChange, email: dataUser.emails.map(value => {
                                 return value.email = e.target.value
@@ -233,17 +229,17 @@ const UserChange = ({handleClose, setRestartList, userChangeId, restartList}) =>
             <div className='userSelect'>
                 <FormControl variant="standard" sx={{m: 1, minWidth: 120}}>
                     <InputLabel
-                        id="demo-simple-select-standard-label">Группа</InputLabel>
+                        id="demo-multiple-name-label">Группа</InputLabel>
                     <Select
-                        value={user.group.id}
-                        labelId="demo-simple-select-standard-label"
-                        id="demo-simple-select-standard"
+                        value={dataUser.group}
+                        labelId="demo-multiple-name-label"
+                        id="demo-multiple-name"
                         onChange={handleChangeGroup}
-                        /*onClick={(e) => {
+                        onClick={(e) => {
                             setDataUser(userDataChange => {
                                 return {...userDataChange, group: e.target.innerText}
                             })
-                        }}*/
+                        }}
                         label="Age"
                         name='group_id'
                     >
@@ -256,19 +252,19 @@ const UserChange = ({handleClose, setRestartList, userChangeId, restartList}) =>
                 </FormControl>
                 <FormControl variant="standard" sx={{m: 1, minWidth: 120}}>
                     <InputLabel
-                        id="demo-simple-select-standard-label">Департамент</InputLabel>
+                        id="demo-multiple-name-label">Департамент</InputLabel>
                     <Select
-                        value={arrayData.department_id}
-                        labelId="demo-simple-select-standard-label"
-                        id="demo-simple-select-standard"
+                        value={user.department_id}
+                        labelId="demo-multiple-name-label"
+                        id="demo-multiple-name"
                         name='department_id'
-                        label="Age"
+                        label="Name"
                         onChange={handleChangeDep}
-                        /*onClick={(e) => {
+                        onClick={(e) => {
                             setDataUser(userChangeDep => {
                                 return {...userChangeDep, department: e.target.innerText}
                             })
-                        }}*/
+                        }}
                     >
                         {departments.map((value, index) => {
                             return <MenuItem key={index} value={value.id}>{value.name}</MenuItem>
@@ -277,18 +273,18 @@ const UserChange = ({handleClose, setRestartList, userChangeId, restartList}) =>
                 </FormControl>
                 <FormControl variant="standard" sx={{m: 1, minWidth: 120}}>
                     <InputLabel
-                        id="demo-simple-select-standard-label">Должность</InputLabel>
+                        id="demo-multiple-name-label">Должность</InputLabel>
                     <Select
-                        value={arrayData.position_id}
+                        value={user.positions}
                         onChange={handleChangeJob}
-                        /*onClick={(e) => {
+                        onClick={(e) => {
                             setDataUser(userChangePos => {
                                 return {...userChangePos, position: e.target.innerText}
                             })
-                        }}*/
-                        label="Age"
-                        labelId="demo-simple-select-standard-label"
-                        id="demo-simple-select-standard"
+                        }}
+                        label="Name"
+                        labelId="demo-multiple-name-label"
+                        id="demo-multiple-name"
                         name='position_id'
                     >
                         {
@@ -302,9 +298,8 @@ const UserChange = ({handleClose, setRestartList, userChangeId, restartList}) =>
             <div className='addButtonUser'>
                 <button onClick={handleClose} className='buttonRole'>Отмена</button>
                 <button
-                    style={{background: 'green', color: 'white'}}
                     onClick={changeUserData}
-                    className='buttonRole'
+                    className={examination === 'no' ? 'checkboxButtonAction checkboxButtonDisabled': 'checkboxButtonAction'}
                     disabled={examination === 'no'}
                 >Сохранить
                 </button>

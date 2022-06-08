@@ -40,8 +40,17 @@
 }
 
 .checkboxButtonAction {
+    padding: 15px;
+    border: 1px solid #cccccc;
+    border-radius: 5px;
+    margin-right: 10px;
+    font-size: 15px;
+    cursor: pointer;
     background-color: green;
     color: white;
+}
+.checkboxButtonDisabled{
+    background-color: #c8cdd1!important;
 }
 
 .addButtonUser {
