@@ -62,7 +62,6 @@ const StyledInputBase = styled(InputBase)(({theme}) => ({
 }));
 
 const  MenuAdmin =({authorization})=> {
-    console.log(authorization)
 
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);

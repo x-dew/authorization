@@ -15,17 +15,15 @@ import AddUser from "./addUser/addUser";
 import {useNavigate} from "react-router-dom";
 
 
-
-
 const Admin = () => {
 
-    const [addUser,setAddUser]=useState('')
-    const [userBlock,setUserBlock] = useState([])
+    const [addUser, setAddUser] = useState('')
+    const [userBlock, setUserBlock] = useState([])
     const [open, setOpen] = React.useState(false);
 
     const handleOpen = () => setOpen(true);
 
-    const [restartList,setRestartList] = useState(1)
+    const [restartList, setRestartList] = useState(1)
     const [userChangeId, setUserChangeId] = useState('')
 
     const navigate = useNavigate();
@@ -40,9 +38,7 @@ const Admin = () => {
             navigate("/authorization")
             console.log(error)
         })
-    },[restartList])
-
-
+    }, [restartList])
 
 
     return (
@@ -50,8 +46,8 @@ const Admin = () => {
             <div className='userBlock'>
                 <div className='userBlockHeader'>
                     <h2>Пользователи</h2>
-                    <Stack  direction="row" spacing={2}>
-                        <Button  onClick={()=> {
+                    <Stack direction="row" spacing={2}>
+                        <Button onClick={() => {
                             handleOpen()
                             setAddUser('addUser')
                         }} variant="contained" color="success">
@@ -61,7 +57,7 @@ const Admin = () => {
                 </div>
                 <div className='userTable'>
                     <TableContainer component={Paper}>
-                        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                        <Table sx={{minWidth: 650}} aria-label="simple table">
                             <TableHead>
                                 <TableRow>
                                     <TableCell>Id</TableCell>
@@ -71,17 +67,17 @@ const Admin = () => {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {userBlock.map((value,index) => (
+                                {userBlock.map((value, index) => (
                                     <TableRow
-                                        style={{cursor:'pointer'}}
-                                        onClick={()=> {
+                                        style={{cursor: 'pointer'}}
+                                        onClick={() => {
                                             setUserChangeId(value.id)
                                             handleOpen()
                                             setAddUser('userChange')
 
                                         }}
                                         key={index}
-                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                        sx={{'&:last-child td, &:last-child th': {border: 0}}}
                                     >
                                         <TableCell>{value.id}</TableCell>
                                         <TableCell>{value.login}</TableCell>
@@ -94,14 +90,14 @@ const Admin = () => {
                     </TableContainer>
                 </div>
             </div>
-             <AddUser
-                 userChangeId={userChangeId}
-                 addUser={addUser}
-                 setRestartList={setRestartList}
+            <AddUser
+                userChangeId={userChangeId}
+                addUser={addUser}
+                setRestartList={setRestartList}
                 handleOpen={handleOpen}
                 open={open}
                 setOpen={setOpen}
-                 restartList={restartList}/>
+                restartList={restartList}/>
         </div>
     )
 }

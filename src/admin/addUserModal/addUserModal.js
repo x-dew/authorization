@@ -130,14 +130,14 @@ const AddUserModal = ({handleClose,setRestartList,restartList}) => {
                 autoComplete="off"
             >
                 <TextField
-                    onChange={(e) => changeObject(e)}
+                    onChange={changeObject}
                     name='login'
                     value={user.login}
                     id="outlined-basic"
                     label="Логин"
                     variant="outlined"/>
                 <TextField
-                    onChange={(e) => changeObject(e)}
+                    onChange={changeObject}
                     name='pwd'
                     type='password'
                     id="outlined-basic"
@@ -145,7 +145,7 @@ const AddUserModal = ({handleClose,setRestartList,restartList}) => {
                     value={user.pwd}
                     variant="outlined"/>
                 <TextField
-                    onChange={(e) => changeObject(e)}
+                    onChange={ changeObject}
                     name='name'
                     value={user.name}
                     id="outlined-basic"
@@ -164,7 +164,7 @@ const AddUserModal = ({handleClose,setRestartList,restartList}) => {
                     label="Телефон"
                     variant="outlined"/>
                 <TextField
-                    onChange={(e) => changeObject(e)}
+                    onChange={ changeObject}
                     name='emails'
                     value={user.emails}
                     type='email'

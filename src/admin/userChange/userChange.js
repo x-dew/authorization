@@ -12,62 +12,56 @@ import axios from "axios";
 const UserChange = ({handleClose, setRestartList, userChangeId, restartList}) => {
 
     const [user, setUser] = useState({
-        role: "",
-        login: "",
-        pwd: null,
-        name: "",
-        group: null,
-        department:null,
-        positions: null,
+        group: [],
+        department: [],
+        positions: [],
         number: [],
         email: [],
+        group_id: "",
+        departments_id: "",
+        positions_id: "",
     })
-    const [groups, setGroups] = useState([])
-    const [departments, setDepartments] = useState([])
-    const [positions, setPositions] = useState([])
+
+
+    const [groups, setGroups] = useState('')
+    const [departments, setDepartments] = useState('')
+    const [positions, setPositions] = useState('')
 
     const [dataUser, setDataUser] = useState({})
     const [examination, setExamination] = useState('')
+    const [messageError,setMessageError] = useState('')
 
 
     const handleChangeGroup = (event: SelectChangeEvent, name) => {
-        setUser(user => {
-            return {...user, group: {id:event.target.value}}
-        })
+        setGroups(event.target.value)
     };
 
     const handleChangeDep = (event: SelectChangeEvent, name) => {
-        setUser(userDataChange => {
-            return {...userDataChange, department: event.target.value}
-        })
+        setDepartments(event.target.value)
     };
 
     const handleChangeJob = (event: SelectChangeEvent, name) => {
-        setUser(userDataChange => {
-            return {...userDataChange, positions: event.target.value}
-        })
+        setPositions(event.target.value)
     };
 
-    console.log(user.positions)
-
     const changeUserData = (e) => {
-        handleClose(e)
         const dataUsers = {
             ...dataUser,
             "pwd": dataUser.pwd || null,
             "numbers": user.number,
             "emails": user.email,
-            "group_id": user.group,
-            "department_id": user.department,
-            "position_id": user.positions,
+            "group_id": groups || null,
+            "department_id": departments || null,
+            "position_id": positions || null,
             "role": dataUser.role.name,
             "token": localStorage.getItem('access_token'),
         }
         axios.put(`http://localhost:8088/admin/users/${userChangeId}`, dataUsers
         ).then((resp) => {
             setRestartList(restartList + 1)
+            handleClose(e)
         }).catch((error) => {
-            setRestartList(restartList = 1)
+            setRestartList(restartList === 1)
             console.log(error)
         })
     }
@@ -86,39 +80,53 @@ const UserChange = ({handleClose, setRestartList, userChangeId, restartList}) =>
             })
     }
 
+
     useEffect(() => {
         axios.post(`http://localhost:8088/admin/users/${userChangeId}`, {
             token: localStorage.getItem('access_token')
         }).then((res) => {
             setDataUser(res.data)
-            setUser(user=>{
-                return{
+            setUser(user => {
+                return {
                     ...user,
                     number: res.data.numbers.map(value => value.number),
                     email: res.data.emails.map(value => value.email),
-                    positions: res.data.position.id
-
+                    group_id: res.data.group.id,
+                    departments_id: res.data.department.id,
+                    positions_id: res.data.position.id,
                 }
             })
-            console.log(res)
+            console.log(res.data)
         })
             .catch((error) => {
                 console.log(error)
             })
     }, [])
 
+    setTimeout(() => {
+        if (groups === '') setGroups(user.group_id)
+        if (departments === '') setDepartments(user.departments_id)
+        if (positions === '') setPositions(user.positions_id)
+    }, )
+
     useEffect(() => {
 
         axios.post('http://localhost:8088/admin/groups/list', {token: localStorage.getItem('access_token'),})
-            .then(res => setGroups(res.data.groups))
+            .then(res => setUser(user => {
+                return {...user, group: res.data.groups}
+            }))
             .catch(error => console.log(error))
 
         axios.post('http://localhost:8088/admin/departments/list', {token: localStorage.getItem('access_token'),})
-            .then(res => setDepartments(res.data.departments))
+            .then(res => setUser(user => {
+                return {...user, department: res.data.departments}
+            }))
             .catch(error => console.log(error))
 
         axios.post('http://localhost:8088/admin/positions/list', {token: localStorage.getItem('access_token'),})
-            .then(res => setPositions(res.data.positions))
+            .then(res => setUser(user => {
+                return {...user, positions: res.data.positions}
+            }))
             .catch(error => console.log(error))
 
     }, [userChangeId])
@@ -134,10 +142,10 @@ const UserChange = ({handleClose, setRestartList, userChangeId, restartList}) =>
             return {...userDataChange, login: e.target.value}
         })
     }
-    console.log(dataUser.group)
 
     return (
         <div className='changeUserInput'>
+            <div><h3></h3></div>
             <div className='checkbox'>
                 <p>Роль</p>
                 <div className='checkboxButton'>
@@ -231,7 +239,7 @@ const UserChange = ({handleClose, setRestartList, userChangeId, restartList}) =>
                     <InputLabel
                         id="demo-multiple-name-label">Группа</InputLabel>
                     <Select
-                        value={dataUser.group}
+                        value={groups}
                         labelId="demo-multiple-name-label"
                         id="demo-multiple-name"
                         onChange={handleChangeGroup}
@@ -240,11 +248,11 @@ const UserChange = ({handleClose, setRestartList, userChangeId, restartList}) =>
                                 return {...userDataChange, group: e.target.innerText}
                             })
                         }}
-                        label="Age"
-                        name='group_id'
+                        label="Name"
+                        name='groups'
                     >
                         {
-                            groups.map((value, index) => {
+                            user.group.map((value, index) => {
                                 return <MenuItem key={index} value={value.id}>{value.name}</MenuItem>
                             })
                         }
@@ -254,10 +262,10 @@ const UserChange = ({handleClose, setRestartList, userChangeId, restartList}) =>
                     <InputLabel
                         id="demo-multiple-name-label">Департамент</InputLabel>
                     <Select
-                        value={user.department_id}
+                        value={departments}
                         labelId="demo-multiple-name-label"
                         id="demo-multiple-name"
-                        name='department_id'
+                        name='departments'
                         label="Name"
                         onChange={handleChangeDep}
                         onClick={(e) => {
@@ -266,7 +274,7 @@ const UserChange = ({handleClose, setRestartList, userChangeId, restartList}) =>
                             })
                         }}
                     >
-                        {departments.map((value, index) => {
+                        {user.department.map((value, index) => {
                             return <MenuItem key={index} value={value.id}>{value.name}</MenuItem>
                         })}
                     </Select>
@@ -275,7 +283,7 @@ const UserChange = ({handleClose, setRestartList, userChangeId, restartList}) =>
                     <InputLabel
                         id="demo-multiple-name-label">Должность</InputLabel>
                     <Select
-                        value={user.positions}
+                        value={positions}
                         onChange={handleChangeJob}
                         onClick={(e) => {
                             setDataUser(userChangePos => {
@@ -285,10 +293,10 @@ const UserChange = ({handleClose, setRestartList, userChangeId, restartList}) =>
                         label="Name"
                         labelId="demo-multiple-name-label"
                         id="demo-multiple-name"
-                        name='position_id'
+                        name='positions'
                     >
                         {
-                            positions.map((value, index) => {
+                            user.positions.map((value, index) => {
                                 return <MenuItem key={index} value={value.id}>{value.name}</MenuItem>
                             })
                         }
@@ -299,7 +307,7 @@ const UserChange = ({handleClose, setRestartList, userChangeId, restartList}) =>
                 <button onClick={handleClose} className='buttonRole'>Отмена</button>
                 <button
                     onClick={changeUserData}
-                    className={examination === 'no' ? 'checkboxButtonAction checkboxButtonDisabled': 'checkboxButtonAction'}
+                    className={examination === 'no' ? 'checkboxButtonAction checkboxButtonDisabled' : 'checkboxButtonAction'}
                     disabled={examination === 'no'}
                 >Сохранить
                 </button>

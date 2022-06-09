@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState,useEffect} from "react";
 
 import './App.css';
 import Header from "./header/header";
@@ -8,12 +8,12 @@ import AuthorizationPage from "./autorization/authorizationPage/authorizationPag
 import Registration from "./registration/registration";
 import Admin from "./admin/admin";
 import CircularProgress from '@mui/material/CircularProgress';
+import axios from "axios";
 
 
+const App = () => {
 
-function App() {
-
-    const [tokenGet,setTokenGet] = useState(localStorage.getItem('access_token'))
+    const [tokenGet, setTokenGet] = useState(localStorage.getItem('access_token'))
 
     const input = (value, e) => {
         value({
