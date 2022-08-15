@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from "react";
 import Backdrop from '@mui/material/Backdrop';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
@@ -6,6 +6,7 @@ import Fade from '@mui/material/Fade';
 import Button from '@mui/material/Button';
 import './addUser.css'
 import BackspaceIcon from '@mui/icons-material/Backspace';
+import EditOffIcon from '@mui/icons-material/EditOff';
 import AddUserModal from "../addUserModal/addUserModal";
 import UserChange from "../userChange/userChange";
 
@@ -24,7 +25,9 @@ const style = {
 };
 
 
-const AddUser = ({restartList, setOpen, open, setRestartList, addUser,userChangeId}) => {
+
+
+const AddUser = ({restartList, setOpen, open, setRestartList, addUser, userChangeId}) => {
     const handleClose = () => setOpen(false);
 
     return (
@@ -52,10 +55,10 @@ const AddUser = ({restartList, setOpen, open, setRestartList, addUser,userChange
                                 setRestartList={setRestartList}
                                 handleClose={handleClose}/>
                         </div>
-                    </Box> : <Box className='modal' sx={style}>
+                    </Box> : <Box className={'modal'} sx={style}>
                         <div className='modalWindows'>
                             <h3>Изменение данных пользователя</h3>
-                            <BackspaceIcon onClick={handleClose}/>
+                            <EditOffIcon onClick={handleClose}/>
                         </div>
                         <div className='modalInput'>
                             <UserChange

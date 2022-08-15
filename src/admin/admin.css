@@ -15,6 +15,10 @@
 .css-1ygcj2i-MuiTableCell-root{
     text-align: start!important;
     font-weight: 700!important;
+    color:#2e7d32!important;
+}
+.css-1ex1afd-MuiTableCell-root{
+    font-weight: 700!important;
 }
 
 .css-177gid-MuiTableCell-root{
@@ -24,6 +28,7 @@
 .userBlock{
     background-color: white;
     width: 80%;
+    border-radius: 20px;
     margin: 0 auto;
     padding: 10px 30px 20px 30px;
 }
@@ -35,4 +40,9 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+}
+
+.css-1c2i806-MuiFormLabel-root-MuiInputLabel-root{
+    font-weight: 700!important;
+    color:#2e7d32!important;
 }

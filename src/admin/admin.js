@@ -1,6 +1,5 @@
-import React, {useState} from "react";
+import React, {useState,useEffect} from "react";
 import './admin.css'
-import {useEffect} from "react";
 import axios from "axios";
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -15,11 +14,10 @@ import AddUser from "./addUser/addUser";
 import {useNavigate} from "react-router-dom";
 
 
-const Admin = () => {
-
+const Admin = React.memo(() => {
     const [addUser, setAddUser] = useState('')
     const [userBlock, setUserBlock] = useState([])
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = useState(false);
 
     const handleOpen = () => setOpen(true);
 
@@ -29,7 +27,7 @@ const Admin = () => {
     const navigate = useNavigate();
 
 
-    useEffect(() => {
+    const listFunction = () => {
         axios.post(`http://localhost:8088/admin/users/list`, {
             token: localStorage.getItem('access_token')
         }).then((res) => {
@@ -38,8 +36,10 @@ const Admin = () => {
             navigate("/authorization")
             console.log(error)
         })
-    }, [restartList])
 
+    }
+
+    useEffect(()=>{listFunction()},[restartList])
 
     return (
         <div className='admin'>
@@ -100,6 +100,6 @@ const Admin = () => {
                 restartList={restartList}/>
         </div>
     )
-}
+})
 
 export default Admin

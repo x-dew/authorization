@@ -5,9 +5,7 @@ import {Link} from "react-router-dom";
 const Authorization = () => {
     return (
         <div className='authorization'>
-            <div className='authorization-signIn'>
-
-            </div>
+            <div className='authorization-signIn'></div>
         </div>
     )
 }

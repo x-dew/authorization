@@ -12,3 +12,13 @@
 .modalWindows h3{
     margin-top:0;
 }
+.errorModal{
+    border:2px solid red!important;
+}
+
+.modalWindows .css-i4bv87-MuiSvgIcon-root{
+    color:red!important;
+    cursor:pointer;
+    width: 32px;
+    height: 32px;
+}

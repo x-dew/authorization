@@ -54,7 +54,7 @@ const AuthorizationPage = ({input}) => {
                     className=' input'
                     onChange={(e) => input(dispatchAuthorization, e)}
                     id="outlined-basic"
-                    label="Имя пользователя"
+                    label="Логин"
                     variant="outlined"
                     name='login'/>
                 <TextField

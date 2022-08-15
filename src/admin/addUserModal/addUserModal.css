@@ -3,6 +3,15 @@
     color: black !important;
 }
 
+.css-105qr5e{
+    border-radius:20px;
+    border-color: white!important;
+}
+
+.css-105qr5e:focus-visible{
+    outline: none;
+}
+
 .userSelect {
     margin-top: 30px;
 }
@@ -49,9 +58,6 @@
     background-color: green;
     color: white;
 }
-.checkboxButtonDisabled{
-    background-color: #c8cdd1!important;
-}
 
 .addButtonUser {
     display: flex;
@@ -59,14 +65,42 @@
 }
 
 .actionRole {
-    background: #cccccc;
+    background: #2e7d32;
+    color:white;
 }
 
 .borderColorRed::placeholder {
     color: red!important;
 }
 
+.messageError{
+    text-align: center;
+    color:red;
+    font-size: 20px;
+}
 
+.css-1wc848c-MuiFormHelperText-root.Mui-error{
+    margin-left:0!important;
+    font-weight: 700;
+    font-size: 13px;
+}
+
+.changeUserInput .css-1sumxir-MuiFormLabel-root-MuiInputLabel-root{
+    color: #2e7d32!important;
+}
+
+.changeUserInput .checkbox p{
+    color: #2e7d32!important;
+}
+
+.inputUser{
+    margin:0!important;
+    width: 100% !important;
+}
+
+.inputUser .css-1u3bzj6-MuiFormControl-root-MuiTextField-root{
+    margin:10px 0!important;
+}
 
 
 

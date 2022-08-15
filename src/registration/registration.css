@@ -1,6 +1,9 @@
-.registration Link{
-    display: flex;
-    justify-content: end;
+.registration input{
+    display: flex!important;
+    justify-content: end!important;
+    width: calc(100% - 20px);
+    padding:10px;
+    font-size: 20px;
 }
 
 

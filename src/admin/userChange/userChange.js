@@ -1,4 +1,4 @@
-import React, {useEffect, useReducer, useState} from 'react';
+import React, {useEffect, memo, useState} from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import InputLabel from '@mui/material/InputLabel';
@@ -7,63 +7,128 @@ import FormControl from '@mui/material/FormControl';
 import Select, {SelectChangeEvent} from '@mui/material/Select';
 import '../addUserModal/addUserModal.css'
 import axios from "axios";
+import Joi from "joi"
 
 
-const UserChange = ({handleClose, setRestartList, userChangeId, restartList}) => {
-
-    const [user, setUser] = useState({
-        group: [],
-        department: [],
-        positions: [],
-        number: [],
-        email: [],
-        group_id: "",
-        departments_id: "",
-        positions_id: "",
-    })
+const UserChange = React.memo(({handleClose, setRestartList, userChangeId, restartList}) => {
 
 
-    const [groups, setGroups] = useState('')
-    const [departments, setDepartments] = useState('')
-    const [positions, setPositions] = useState('')
+    const [groupId, setGroupId] = useState('')
+    const [departmentId, setDepartmentId] = useState('')
 
-    const [dataUser, setDataUser] = useState({})
-    const [examination, setExamination] = useState('')
-    const [messageError,setMessageError] = useState('')
+    const [positionId, setPositionId] = useState('')
+    const [errorValidate, setErrorValidate] = useState({})
 
+    //Списки
+    const [groups, setGroups] = useState([])
+    const [departments, setDepartments] = useState([])
+    const [positions, setPositions] = useState([])
+    console.log(departments)
+    //Данные пользователя
+    const [user, setUser] = useState({})
 
     const handleChangeGroup = (event: SelectChangeEvent, name) => {
-        setGroups(event.target.value)
+        setGroupId(event.target.value)
     };
 
     const handleChangeDep = (event: SelectChangeEvent, name) => {
-        setDepartments(event.target.value)
+        setDepartmentId(event.target.value)
     };
 
     const handleChangeJob = (event: SelectChangeEvent, name) => {
-        setPositions(event.target.value)
+        setPositionId(event.target.value)
     };
 
+
+    const schema = Joi.object({
+        email: Joi.string()
+            .email({minDomainSegments: 2, tlds: {allow: ['com', 'net']}})
+            .messages({
+                'string.email': 'введите действительную почту',
+                'string.empty': "введите email"
+            }),
+        username: Joi.string()
+            .required()
+            .pattern(/^[a-zA-Z]+$/)
+            .min(3)
+            .max(10)
+            .messages({
+                'string.pattern.base': 'недопустимые символы',
+                'string.empty': "введите имя",
+                'string.min': 'длинна не должа быть меньше 3 символов',
+                'string.max': 'длинна не должа превышать 10 символов',
+            }),
+        password: Joi.string()
+            .pattern(/^[a-zA-Z0-9]+$/)
+            .min(8)
+            .max(15)
+            .empty('')
+            .messages({
+                'string.pattern.base': 'недопустимые символы',
+                'string.min': 'длинна не должа быть меньше 8 символов',
+                'string.max': 'длинна не должа превышать 15 символов',
+            }),
+        number: Joi.number()
+            .integer()
+            .required()
+            .messages({
+                'number.base': 'введите телефон',
+            }),
+        login: Joi.string()
+            .min(5)
+            .max(15)
+            .messages({
+                'string.empty': "введите логин",
+                'string.min': 'не менее 5 символов',
+                'string.max': 'не больше 15 символов',
+                'string.base': 'введите логин',
+                'string.pattern.base': 'недопустимые символы'
+            })
+    })
+
     const changeUserData = (e) => {
-        const dataUsers = {
-            ...dataUser,
-            "pwd": dataUser.pwd || null,
-            "numbers": user.number,
-            "emails": user.email,
-            "group_id": groups || null,
-            "department_id": departments || null,
-            "position_id": positions || null,
-            "role": dataUser.role.name,
-            "token": localStorage.getItem('access_token'),
-        }
-        axios.put(`http://localhost:8088/admin/users/${userChangeId}`, dataUsers
-        ).then((resp) => {
-            setRestartList(restartList + 1)
-            handleClose(e)
-        }).catch((error) => {
-            setRestartList(restartList === 1)
-            console.log(error)
+        const validate = user.role === 'user' ? schema.validate({
+            email: user.email,
+            password: user.pwd,
+            username: user.name,
+            number: user.number,
+            login: user.login
+        }) : schema.validate({
+            email: user.email,
+            username: user.name,
+            number: user.number,
         })
+
+        setErrorValidate({})
+        if (validate.error) {
+            validate.error.details.forEach(v => {
+                console.log(v)
+                setErrorValidate(e => ({
+                    ...e,
+                    [v.context.key]: v.message
+                }))
+            })
+        } else {
+            const dataUser = {
+                ...user,
+                "pwd": user.pwd || null,
+                "group_id": groupId === '' ? null : groupId === 1 ? null : groupId,
+                "position_id": positionId === '' ? null : positionId === 1 ? null : positionId,
+                "department_id": departmentId === '' ? null : departmentId === 1 ? null : departmentId,
+                "numbers": [user.number],
+                "emails": [user.email],
+                "token": localStorage.getItem('access_token'),
+            }
+            axios.put(`http://localhost:8088/admin/users/${userChangeId}`, dataUser)
+                .then((resp) => {
+                    setRestartList(restartList + 1)
+                    handleClose(e)
+                }).catch((error) => {
+                setRestartList(restartList = 1)
+                console.log(error)
+            })
+        }
+
     }
 
     const deleteUser = (e) => {
@@ -80,72 +145,55 @@ const UserChange = ({handleClose, setRestartList, userChangeId, restartList}) =>
             })
     }
 
-
     useEffect(() => {
         axios.post(`http://localhost:8088/admin/users/${userChangeId}`, {
             token: localStorage.getItem('access_token')
         }).then((res) => {
-            setDataUser(res.data)
-            setUser(user => {
-                return {
-                    ...user,
-                    number: res.data.numbers.map(value => value.number),
-                    email: res.data.emails.map(value => value.email),
-                    group_id: res.data.group.id,
-                    departments_id: res.data.department.id,
-                    positions_id: res.data.position.id,
-                }
+            setGroupId(res.data?.group?.id)
+            setDepartmentId(res.data?.department?.id)
+            setPositionId(res.data?.position?.id)
+            setUser({
+                ...res.data,
+                role: res.data.role.name,
+                number: res.data.numbers.length > 0 ? res.data.numbers[0].number : "",
+                email: res.data.emails.length > 0 ? res.data.emails[0].email : "",
             })
-            console.log(res.data)
         })
             .catch((error) => {
                 console.log(error)
             })
     }, [])
 
-    setTimeout(() => {
-        if (groups === '') setGroups(user.group_id)
-        if (departments === '') setDepartments(user.departments_id)
-        if (positions === '') setPositions(user.positions_id)
-    }, )
 
     useEffect(() => {
 
         axios.post('http://localhost:8088/admin/groups/list', {token: localStorage.getItem('access_token'),})
-            .then(res => setUser(user => {
-                return {...user, group: res.data.groups}
-            }))
+            .then((res) => {
+                res.data.groups.push({id: 1, name: 'Удалить Группу'})
+                setGroups(res.data.groups)
+            })
             .catch(error => console.log(error))
 
         axios.post('http://localhost:8088/admin/departments/list', {token: localStorage.getItem('access_token'),})
-            .then(res => setUser(user => {
-                return {...user, department: res.data.departments}
-            }))
+            .then((res) => {
+                res.data.departments.push({id: 1, name: 'Удалить Департамент'})
+                setDepartments(res.data.departments)
+            })
             .catch(error => console.log(error))
 
         axios.post('http://localhost:8088/admin/positions/list', {token: localStorage.getItem('access_token'),})
-            .then(res => setUser(user => {
-                return {...user, positions: res.data.positions}
-            }))
+            .then((res) => {
+                res.data.positions.push({id: 1, name: 'Удалить Должность'})
+                setPositions(res.data.positions)
+            })
             .catch(error => console.log(error))
 
     }, [userChangeId])
 
 
-    const userFunLogin = (e) => {
-        if (e.target.value === '') {
-            setExamination('no')
-        } else {
-            setExamination('yes')
-        }
-        setDataUser(userDataChange => {
-            return {...userDataChange, login: e.target.value}
-        })
-    }
-
     return (
         <div className='changeUserInput'>
-            <div><h3></h3></div>
+            <div className='messageError'></div>
             <div className='checkbox'>
                 <p>Роль</p>
                 <div className='checkboxButton'>
@@ -153,14 +201,14 @@ const UserChange = ({handleClose, setRestartList, userChangeId, restartList}) =>
                         className={user.role === 'user' ? 'buttonRole actionRole' : 'buttonRole'}
                         style={{cursor: 'inherit'}}
                         name='role'
-                        disabled={user.role === 'contact'}
+                        disabled={true}
                     >Пользователь
                     </button>
                     <button
-                        disabled={user.role === 'user'}
-                        style={{cursor: 'inherit'}}
                         className={user.role === 'contact' ? 'buttonRole actionRole' : 'buttonRole'}
+                        style={{cursor: 'inherit'}}
                         name='role'
+                        disabled={true}
                     >Контакт
                     </button>
                 </div>
@@ -173,64 +221,68 @@ const UserChange = ({handleClose, setRestartList, userChangeId, restartList}) =>
                 noValidate
                 autoComplete="off"
             >
-                <TextField
-                    onChange={userFunLogin}
-                    className={examination === 'no' ? 'borderColorRed' : ''}
-                    name='login'
-                    id="outlined-basic"
-                    label={examination === 'no' ? 'Придумайте логин' : 'Логин'}
-                    placeholder={examination === 'no' ? 'Придумайте логин' : ''}
-                    value={dataUser.login}
-                    variant="outlined"/>
+                {
+                    user.role === 'user' ? <div className='inputUser'>
+                        <TextField
+                            onChange={(e) => {
+                                setUser(user => ({...user, login: e.target.value}))
+                            }}
+                            error={!!errorValidate.login}
+                            helperText={errorValidate.login}
+                            name='login'
+                            label='Логин'
+                            id="outlined-basic"
+                            value={user.login}
+                            variant="outlined"/>
+                        <TextField
+                            onChange={(e) => {
+                                setUser(user => ({...user, pwd: e.target.value}))
+                                console.log(e.target.value)
+                            }}
+                            name='pwd'
+                            type='text'
+                            error={!!errorValidate.password}
+                            helperText={errorValidate.password}
+                            id="outlined-basic"
+                            label='Пароль'
+                            value={user.pwd}
+                            variant="outlined"/>
+
+                    </div> : ''
+                }
                 <TextField
                     onChange={(e) => {
-                        setDataUser(userDataChange => {
-                            return {...userDataChange, pwd: e.target.value}
-                        })
-                    }}
-                    name='pwd'
-                    id="outlined-basic"
-                    label='Пароль'
-                    value={dataUser.pwd}
-                    variant="outlined"/>
-                <TextField
-                    onChange={(e) => {
-                        setDataUser(userDataChange => {
-                            return {...userDataChange, name: e.target.value}
-                        })
+                        setUser(user => ({...user, name: e.target.value}))
                     }}
                     name='name'
                     id="outlined-basic"
-                    value={dataUser.name}
+                    value={user.name}
+                    error={!!errorValidate.username}
+                    helperText={errorValidate.username}
                     label='Имя'
                     variant="outlined"/>
                 <TextField
-                    onChange={(e) => setUser(userDataChange => {
-                        return {
-                            ...userDataChange, number: dataUser.emails.map(value => {
-                                return value.email = e.target.value
-                            })
-                        }
-                    })}
+                    onChange={(e) => {
+                        setUser(user => ({...user, number: e.target.value}))
+                    }}
                     value={user.number}
                     label='Номер'
                     name='numbers'
                     type='text'
+                    error={!!errorValidate.number}
+                    helperText={errorValidate.number}
                     id="outlined-basic"
                     variant="outlined"/>
                 <TextField
-                    onChange={(e) => setUser(userDataChange => {
-                        return {
-                            ...userDataChange, email: dataUser.emails.map(value => {
-                                return value.email = e.target.value
-                            })
-                        }
-                    })
-                    }
+                    onChange={(e) => {
+                        setUser(user => ({...user, email: e.target.value}))
+                    }}
                     value={user.email}
                     label='Email'
                     name='emails'
                     type='email'
+                    error={!!errorValidate.email}
+                    helperText={errorValidate.email}
                     id="outlined-basic"
                     variant="outlined"/>
             </Box>
@@ -239,21 +291,18 @@ const UserChange = ({handleClose, setRestartList, userChangeId, restartList}) =>
                     <InputLabel
                         id="demo-multiple-name-label">Группа</InputLabel>
                     <Select
-                        value={groups}
+                        value={groupId}
                         labelId="demo-multiple-name-label"
                         id="demo-multiple-name"
                         onChange={handleChangeGroup}
-                        onClick={(e) => {
-                            setDataUser(userDataChange => {
-                                return {...userDataChange, group: e.target.innerText}
-                            })
-                        }}
                         label="Name"
                         name='groups'
                     >
                         {
-                            user.group.map((value, index) => {
-                                return <MenuItem key={index} value={value.id}>{value.name}</MenuItem>
+                            groups.map((value, index) => {
+                                return <MenuItem
+                                    style={value.name === 'Удалить Группу' ? {color: 'red'} : {color: 'black'}}
+                                    key={index} value={value.id}>{value.name}</MenuItem>
                             })
                         }
                     </Select>
@@ -262,42 +311,38 @@ const UserChange = ({handleClose, setRestartList, userChangeId, restartList}) =>
                     <InputLabel
                         id="demo-multiple-name-label">Департамент</InputLabel>
                     <Select
-                        value={departments}
+                        value={departmentId}
                         labelId="demo-multiple-name-label"
                         id="demo-multiple-name"
                         name='departments'
                         label="Name"
                         onChange={handleChangeDep}
-                        onClick={(e) => {
-                            setDataUser(userChangeDep => {
-                                return {...userChangeDep, department: e.target.innerText}
-                            })
-                        }}
                     >
-                        {user.department.map((value, index) => {
-                            return <MenuItem key={index} value={value.id}>{value.name}</MenuItem>
-                        })}
+                        {
+                            departments.map((value, index) => {
+                                return <MenuItem
+                                    style={value.name === 'Удалить Департамент' ? {color: 'red'} : {color: 'black'}}
+                                    key={index} value={value.id}>{value.name}</MenuItem>
+                            })
+                        }
                     </Select>
                 </FormControl>
                 <FormControl variant="standard" sx={{m: 1, minWidth: 120}}>
                     <InputLabel
                         id="demo-multiple-name-label">Должность</InputLabel>
                     <Select
-                        value={positions}
+                        value={positionId}
                         onChange={handleChangeJob}
-                        onClick={(e) => {
-                            setDataUser(userChangePos => {
-                                return {...userChangePos, position: e.target.innerText}
-                            })
-                        }}
                         label="Name"
                         labelId="demo-multiple-name-label"
                         id="demo-multiple-name"
                         name='positions'
                     >
                         {
-                            user.positions.map((value, index) => {
-                                return <MenuItem key={index} value={value.id}>{value.name}</MenuItem>
+                            positions.map((value, index) => {
+                                return <MenuItem
+                                    style={value.name === 'Удалить Должность' ? {color: 'red'} : {color: 'black'}}
+                                    key={index} value={value.id}>{value.name}</MenuItem>
                             })
                         }
                     </Select>
@@ -307,8 +352,7 @@ const UserChange = ({handleClose, setRestartList, userChangeId, restartList}) =>
                 <button onClick={handleClose} className='buttonRole'>Отмена</button>
                 <button
                     onClick={changeUserData}
-                    className={examination === 'no' ? 'checkboxButtonAction checkboxButtonDisabled' : 'checkboxButtonAction'}
-                    disabled={examination === 'no'}
+                    className='checkboxButtonAction'
                 >Сохранить
                 </button>
                 <button
@@ -320,5 +364,5 @@ const UserChange = ({handleClose, setRestartList, userChangeId, restartList}) =>
             </div>
         </div>
     )
-}
+})
 export default UserChange

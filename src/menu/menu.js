@@ -35,6 +35,9 @@ useEffect(()=>{setButtonHome('click')},[])
                         <Link onClick={()=>{setButtonHome('click')}} to="/authorization">
                             <Button color="inherit">Авторизоваться</Button>
                         </Link>
+                        <Link onClick={()=>{setButtonHome('click')}} to="/registration">
+                            <Button color="inherit">Регистрация</Button>
+                        </Link>
                         {buttonHome === 'click' ? <Link onClick={()=>{setButtonHome('')}} to="/">
                             <Button color="inherit">Главная</Button>
                         </Link> : ''}

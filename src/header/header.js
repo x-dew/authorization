@@ -4,10 +4,10 @@ import Menu from "../menu/menu";
 import MenuAdmin from "../admin/menuAdmin";
 
 
-const Header = () => {
+const Header = ({setAddUser}) => {
     return (
         <div className='header'>
-            <MenuAdmin/>
+            <MenuAdmin setAddUser={setAddUser}/>
         </div>
     )
 }
