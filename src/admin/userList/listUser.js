@@ -12,6 +12,7 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import ModalUser from "../modalUser/modalUser";
 import {useNavigate} from "react-router-dom";
+import Department from "../../department/department";
 
 
 const ListUser = React.memo(() => {
@@ -43,9 +44,11 @@ const ListUser = React.memo(() => {
 
     return (
         <div className='admin'>
+            <Department/>
             <div className='userBlock'>
                 <div className='userBlockHeader'>
                     <h2>Пользователи</h2>
+
                     <Stack direction="row" spacing={2}>
                         <Button onClick={() => {
                             handleOpen()
