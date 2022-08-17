@@ -1,6 +1,5 @@
 import React, {useReducer, useState} from "react";
 import './authorizationPage.css'
-import {useForm} from "react-hook-form";
 import {reduce, signIn} from '../../reduce'
 import axios from 'axios';
 import Box from '@mui/material/Box';
@@ -67,7 +66,7 @@ const AuthorizationPage = ({input}) => {
                     type="password"/>
             </Box>
 
-            {adminPage === '0' ? <CircularProgress/> : ''}
+            {adminPage === '0' ? <CircularProgress color="success"/> : ''}
             <div className='buttonAuthorization'>
                 <button onClick={() => {
                     setAdminPage('0')

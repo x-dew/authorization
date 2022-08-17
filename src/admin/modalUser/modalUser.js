@@ -3,11 +3,10 @@ import Backdrop from '@mui/material/Backdrop';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Fade from '@mui/material/Fade';
-import Button from '@mui/material/Button';
-import './addUser.css'
+import './modalUser.css'
 import BackspaceIcon from '@mui/icons-material/Backspace';
 import EditOffIcon from '@mui/icons-material/EditOff';
-import AddUserModal from "../addUserModal/addUserModal";
+import UserAdd from "../userAdd/userAdd";
 import UserChange from "../userChange/userChange";
 
 const style = {
@@ -27,7 +26,7 @@ const style = {
 
 
 
-const AddUser = ({restartList, setOpen, open, setRestartList, addUser, userChangeId}) => {
+const ModalUser = ({restartList, setOpen, open, setRestartList, addUser, userChangeId}) => {
     const handleClose = () => setOpen(false);
 
     return (
@@ -50,7 +49,7 @@ const AddUser = ({restartList, setOpen, open, setRestartList, addUser, userChang
                             <BackspaceIcon onClick={handleClose}/>
                         </div>
                         <div className='modalInput'>
-                            <AddUserModal
+                            <UserAdd
                                 restartList={restartList}
                                 setRestartList={setRestartList}
                                 handleClose={handleClose}/>
@@ -75,4 +74,4 @@ const AddUser = ({restartList, setOpen, open, setRestartList, addUser, userChang
     );
 }
 
-export default AddUser
+export default ModalUser

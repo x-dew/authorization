@@ -1,19 +1,14 @@
-import React, {useState,useEffect} from "react";
+import React from "react";
 
 import './App.css';
 import Header from "./header/header";
-import Authorization from "./autorization/authorization";
-import {Routes, Switch, Route, useNavigate} from "react-router-dom";
+import StartPage from "./autorization/startPage";
+import {Routes, Route} from "react-router-dom";
 import AuthorizationPage from "./autorization/authorizationPage/authorizationPage";
 import Registration from "./registration/registration";
-import Admin from "./admin/admin";
-import CircularProgress from '@mui/material/CircularProgress';
-import axios from "axios";
-
+import ListUser from "./admin/userList/listUser";
 
 const App = () => {
-
-    const [tokenGet, setTokenGet] = useState(localStorage.getItem('access_token'))
 
     const input = (value, e) => {
         value({
@@ -28,11 +23,11 @@ const App = () => {
         <div className="App">
             <Header/>
             <Routes>
-                <Route path="/" element={<Authorization/>}/>
+                <Route path="/" element={<StartPage/>}/>
                 <Route path="authorization"
                        element={<AuthorizationPage input={input}/>}/>
                 <Route path="registration" element={<Registration/>}/>
-                <Route path="admin" element={<Admin/>}/>
+                <Route path="admin" element={<ListUser/>}/>
             </Routes>
         </div>
     );

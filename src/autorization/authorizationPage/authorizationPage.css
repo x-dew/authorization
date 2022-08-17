@@ -9,7 +9,7 @@
     background-position-x: center;
     background-position-y: center;
     background-repeat: no-repeat;
-    background-image: url("../../image/free-png.ru-174.png");
+    background-image: url("../../image/back.jpg");
     border-radius: 20px;
 }
 .link-text{
@@ -55,7 +55,7 @@
 }
 .button{
     padding: 15px 30px;
-    background: green!important;
+    background: #1e89d7!important;
     color:white!important;
     border: none;
     border-radius:5px;
@@ -69,4 +69,5 @@
 .css-1u3bzj6-MuiFormControl-root-MuiTextField-root{
     width: 100%!important;
     margin-left: 0!important;
+    border-radius: 4px;
 }

@@ -1,7 +1,6 @@
 import React from "react";
 import './header.css'
-import Menu from "../menu/menu";
-import MenuAdmin from "../admin/menuAdmin";
+import MenuAdmin from "../menu/menuAdmin";
 
 
 const Header = ({setAddUser}) => {

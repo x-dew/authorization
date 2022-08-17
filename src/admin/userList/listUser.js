@@ -1,5 +1,5 @@
 import React, {useState,useEffect} from "react";
-import './admin.css'
+import './listUser.css'
 import axios from "axios";
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -10,11 +10,11 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
-import AddUser from "./addUser/addUser";
+import ModalUser from "../modalUser/modalUser";
 import {useNavigate} from "react-router-dom";
 
 
-const Admin = React.memo(() => {
+const ListUser = React.memo(() => {
     const [addUser, setAddUser] = useState('')
     const [userBlock, setUserBlock] = useState([])
     const [open, setOpen] = useState(false);
@@ -90,7 +90,7 @@ const Admin = React.memo(() => {
                     </TableContainer>
                 </div>
             </div>
-            <AddUser
+            <ModalUser
                 userChangeId={userChangeId}
                 addUser={addUser}
                 setRestartList={setRestartList}
@@ -102,4 +102,4 @@ const Admin = React.memo(() => {
     )
 })
 
-export default Admin
+export default ListUser

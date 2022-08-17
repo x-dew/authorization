@@ -1,8 +1,7 @@
 import React from "react";
-import './authorization.css'
-import {Link} from "react-router-dom";
+import './startPage.css'
 
-const Authorization = () => {
+const StartPage = () => {
     return (
         <div className='authorization'>
             <div className='authorization-signIn'></div>
@@ -10,4 +9,4 @@ const Authorization = () => {
     )
 }
 
-export default Authorization
+export default StartPage

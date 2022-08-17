@@ -5,12 +5,12 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, {SelectChangeEvent} from '@mui/material/Select';
-import {userReduce, users} from "../userAdd";
-import './addUserModal.css'
+import {userReduce, users} from "./userAddReduce";
+import './userAdd.css'
 import axios from "axios";
 import Joi from "joi";
 
-const AddUserModal = ({handleClose, setRestartList, restartList}) => {
+const UserAdd = ({handleClose, setRestartList, restartList}) => {
 
     const [user, dispatchUsers] = useReducer(userReduce, users)
 
@@ -351,4 +351,4 @@ const AddUserModal = ({handleClose, setRestartList, restartList}) => {
 }
 
 
-export default AddUserModal
+export default UserAdd

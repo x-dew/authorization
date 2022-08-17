@@ -14,10 +14,9 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import {useNavigate} from "react-router-dom";
-import './admin.css'
-import CustomizedMenus from "../menu/menuClick";
+import '../admin/userList/listUser.css'
+import CustomizedMenus from "./menuClick";
 
 
 
@@ -138,7 +137,7 @@ const  MenuAdmin =({authorization})=> {
                         <MailIcon/>
                     </Badge>
                 </IconButton>
-                <p>Messages</p>
+                <p>Сообщение</p>
             </MenuItem>
             <MenuItem>
                 <IconButton
@@ -150,7 +149,7 @@ const  MenuAdmin =({authorization})=> {
                         <NotificationsIcon/>
                     </Badge>
                 </IconButton>
-                <p>Notifications</p>
+                <p>Уведомления</p>
             </MenuItem>
             <MenuItem onClick={handleProfileMenuOpen}>
                 <IconButton
@@ -162,7 +161,7 @@ const  MenuAdmin =({authorization})=> {
                 >
                     <AccountCircle/>
                 </IconButton>
-                <p>Profile</p>
+                <p>Профиль</p>
             </MenuItem>
         </Menu>
     );

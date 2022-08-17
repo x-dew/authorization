@@ -5,7 +5,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, {SelectChangeEvent} from '@mui/material/Select';
-import '../addUserModal/addUserModal.css'
+import '../userAdd/userAdd.css'
 import axios from "axios";
 import Joi from "joi"
 
@@ -15,6 +15,7 @@ const UserChange = React.memo(({handleClose, setRestartList, userChangeId, resta
 
     const [groupId, setGroupId] = useState('')
     const [departmentId, setDepartmentId] = useState('')
+    console.log(departmentId)
 
     const [positionId, setPositionId] = useState('')
     const [errorValidate, setErrorValidate] = useState({})
@@ -23,9 +24,11 @@ const UserChange = React.memo(({handleClose, setRestartList, userChangeId, resta
     const [groups, setGroups] = useState([])
     const [departments, setDepartments] = useState([])
     const [positions, setPositions] = useState([])
-    console.log(departments)
+    console.log(departmentId)
     //Данные пользователя
     const [user, setUser] = useState({})
+    const styleText = (value,text) => value.name === text ? {color: 'red'} : {color: 'black'}
+
 
     const handleChangeGroup = (event: SelectChangeEvent, name) => {
         setGroupId(event.target.value)
@@ -176,7 +179,8 @@ const UserChange = React.memo(({handleClose, setRestartList, userChangeId, resta
 
         axios.post('http://localhost:8088/admin/departments/list', {token: localStorage.getItem('access_token'),})
             .then((res) => {
-                res.data.departments.push({id: 1, name: 'Удалить Департамент'})
+                console.log(departmentId)
+                res.data.departments.push(departmentId === '' ?{id: 1, name: 'Удалить Департамент'} : '')
                 setDepartments(res.data.departments)
             })
             .catch(error => console.log(error))
@@ -237,7 +241,6 @@ const UserChange = React.memo(({handleClose, setRestartList, userChangeId, resta
                         <TextField
                             onChange={(e) => {
                                 setUser(user => ({...user, pwd: e.target.value}))
-                                console.log(e.target.value)
                             }}
                             name='pwd'
                             type='text'
@@ -301,7 +304,7 @@ const UserChange = React.memo(({handleClose, setRestartList, userChangeId, resta
                         {
                             groups.map((value, index) => {
                                 return <MenuItem
-                                    style={value.name === 'Удалить Группу' ? {color: 'red'} : {color: 'black'}}
+                                    style={styleText(value,'Удалить Группу')}
                                     key={index} value={value.id}>{value.name}</MenuItem>
                             })
                         }
@@ -321,7 +324,7 @@ const UserChange = React.memo(({handleClose, setRestartList, userChangeId, resta
                         {
                             departments.map((value, index) => {
                                 return <MenuItem
-                                    style={value.name === 'Удалить Департамент' ? {color: 'red'} : {color: 'black'}}
+                                    style={styleText(value,'Удалить Департамент')}
                                     key={index} value={value.id}>{value.name}</MenuItem>
                             })
                         }
@@ -341,7 +344,7 @@ const UserChange = React.memo(({handleClose, setRestartList, userChangeId, resta
                         {
                             positions.map((value, index) => {
                                 return <MenuItem
-                                    style={value.name === 'Удалить Должность' ? {color: 'red'} : {color: 'black'}}
+                                    style={styleText(value,'Удалить Должность')}
                                     key={index} value={value.id}>{value.name}</MenuItem>
                             })
                         }
