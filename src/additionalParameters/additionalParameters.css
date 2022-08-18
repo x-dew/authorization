@@ -1,0 +1,28 @@
+.AdditionalParameters {
+    background-color: white;
+    width: 80%;
+    border-radius: 20px;
+    margin: 50px auto 0 auto;
+    padding: 10px 30px 20px 30px;
+
+}
+
+.addi-param_title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.addi-param_title h2 {
+    color: #2e7d32;
+}
+
+.addi-param_data {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+}
+
+.addi-param_data .css-quj9j6-MuiTable-root {
+    min-width: auto !important;
+}

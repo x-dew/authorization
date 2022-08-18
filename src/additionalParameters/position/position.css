@@ -1,0 +1,17 @@
+.position{
+    border-radius: 5px;
+    border-bottom:0.5px solid #c1c1c1;
+    width: 100%;
+}
+
+.position_title{
+    margin: 20px 10px ;
+    display: flex;
+    justify-content:space-between;
+    align-items: center;
+}
+.position_title h2{
+    margin: 0;
+    font-weight: 500;
+    color: #7c7c7c;
+}
