@@ -15,16 +15,15 @@ const UserChange = React.memo(({handleClose, setRestartList, userChangeId, resta
 
     const [groupId, setGroupId] = useState('')
     const [departmentId, setDepartmentId] = useState('')
-    console.log(departmentId)
 
     const [positionId, setPositionId] = useState('')
     const [errorValidate, setErrorValidate] = useState({})
+    console.log(errorValidate)
 
     //Списки
     const [groups, setGroups] = useState([])
     const [departments, setDepartments] = useState([])
     const [positions, setPositions] = useState([])
-    console.log(departmentId)
     //Данные пользователя
     const [user, setUser] = useState({})
     const styleText = (value,text) => value.name === text ? {color: 'red'} : {color: 'black'}

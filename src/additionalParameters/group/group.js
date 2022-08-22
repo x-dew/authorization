@@ -51,10 +51,11 @@ const Group = () => {
     }
     return (
         <div className='group'>
-            <Accordion onClick={() => {
-                withdrawList === '' ? setWithdrawList('list'):setWithdrawList('')
-            }}>
+            <Accordion >
                 <AccordionSummary
+                    onClick={() => {
+                        withdrawList === '' ? setWithdrawList('list'):setWithdrawList('')
+                    }}
                     expandIcon={<ExpandMoreIcon />}
                     aria-controls="panel1a-content"
                     id="panel1a-header"

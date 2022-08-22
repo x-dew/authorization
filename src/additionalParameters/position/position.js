@@ -52,11 +52,12 @@ const Position = () => {
     }
     return (
         <div className='position'>
-            <Accordion onClick={() => {
-                withdrawList === '' ? setWithdrawList('list'):setWithdrawList('')
-            }}>
+            <Accordion>
                 <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
+                    onClick={() => {
+                        withdrawList === '' ? setWithdrawList('list') : setWithdrawList('')
+                    }}
+                    expandIcon={<ExpandMoreIcon/>}
                     aria-controls="panel1a-content"
                     id="panel1a-header"
                 >
@@ -65,7 +66,7 @@ const Position = () => {
                 <AccordionDetails>
                     <Typography>
                         <div className='position_list'>
-                            { withdrawList === 'list' ? <TableContainer component={Paper}>
+                            {withdrawList === 'list' ? <TableContainer component={Paper}>
                                 <Table sx={{minWidth: 650}} aria-label="simple table">
                                     <TableHead>
                                         <TableRow>

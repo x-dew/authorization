@@ -12,7 +12,6 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import ModalUser from "../modalUser/modalUser";
 import {useNavigate} from "react-router-dom";
-import Department from "../../additionalParameters/department/department";
 import AdditionalParameters from "../../additionalParameters/additionalParameters";
 
 

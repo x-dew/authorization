@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import './additionalParameters.css'
 import Department from "./department/department";
 import Button from "@mui/material/Button";
@@ -11,11 +11,6 @@ const AdditionalParameters = () => {
         <div className='AdditionalParameters'>
             <div className='addi-param_title'>
                 <h2>Дополнительные парметры</h2>
-                {/*<Stack direction="row" spacing={2}>*/}
-                {/*    <Button onClick={() => {}} variant="contained" color="success">*/}
-                {/*        Изменить*/}
-                {/*    </Button>*/}
-                {/*</Stack>*/}
             </div>
             <div className='addi-param_data'>
                 <Group/>
