@@ -1,18 +1,48 @@
-.department{
+.department {
     border-radius: 5px;
-    border-bottom:0.5px solid #c1c1c1;
     width: 100%;
     margin: 0 20px;
 }
 
-.depart_title{
-    margin: 20px 10px ;
+.depart_title {
+    margin: 20px 10px;
     display: flex;
-    justify-content:space-between;
+    justify-content: space-between;
     align-items: center;
 }
-.depart_title h2{
+
+.depart_title h2 {
     margin: 0;
     font-weight: 500;
     color: #7c7c7c;
+}
+
+.addDep {
+    margin-bottom: 15px;
+}
+
+.addDepInput {
+    margin: 15px 0
+}
+.inputFlex{
+    display: flex!important;
+    justify-content: space-between!important;
+}
+.MuiGrid-root  path{
+    color: red!important;
+}
+
+.modalAdd{
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+}
+.modalAddInput{
+    margin-top: 0!important;
+}
+.modalAddInput input{
+    height: 0.4375em!important;
+}
+.modalText{
+    margin-top: 0!important;
 }
