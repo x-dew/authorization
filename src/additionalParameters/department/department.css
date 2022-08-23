@@ -1,7 +1,6 @@
 .department {
     border-radius: 5px;
     width: 100%;
-    margin: 0 20px;
 }
 
 .depart_title {
@@ -23,26 +22,4 @@
 
 .addDepInput {
     margin: 15px 0
-}
-.inputFlex{
-    display: flex!important;
-    justify-content: space-between!important;
-}
-.MuiGrid-root  path{
-    color: red!important;
-}
-
-.modalAdd{
-    display: flex;
-    align-items: start;
-    justify-content: space-between;
-}
-.modalAddInput{
-    margin-top: 0!important;
-}
-.modalAddInput input{
-    height: 0.4375em!important;
-}
-.modalText{
-    margin-top: 0!important;
 }

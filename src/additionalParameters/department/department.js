@@ -149,7 +149,7 @@ const Department = () => {
 
     return (
         <div className='department'>
-            <Accordion>
+            <Accordion className='accordions'>
                 <AccordionSummary
                     onClick={() => {
                         withdrawList === '' ? setWithdrawList('list') : setWithdrawList('')
