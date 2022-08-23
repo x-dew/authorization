@@ -26,3 +26,26 @@
 .addi-param_data .css-quj9j6-MuiTable-root {
     min-width: auto !important;
 }
+
+.inputFlex{
+    display: flex!important;
+    justify-content: space-between!important;
+}
+.MuiGrid-root  path{
+    color: red!important;
+}
+
+.modalAdd{
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+}
+.modalAddInput{
+    margin-top: 0!important;
+}
+.modalAddInput input{
+    height: 0.4375em!important;
+}
+.modalText{
+    margin-top: 0!important;
+}
