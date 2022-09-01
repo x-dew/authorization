@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useReducer} from "react";
 import './group.css'
 import {useEffect, useState} from "react";
 import axios from "axios";
@@ -16,11 +16,23 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ModalGroup from "./modalGroup";
+
 
 const Group = () => {
     const [listGroup, setListGroup] = useState([])
+
     const [newGroup, setNewGroup] = useState('')
     const [withdrawList, setWithdrawList] = useState('')
+    const [list, setList] = useState(1)
+    const [open, setOpen] = useState(false);
+    const [selectId, setSelectId] = useState(0)
+    const [buttonClick, setButtonClick] = useState('')
+    const styleText = (value, text) => value === text ? {color:'red'}: value === null ? {color: ''} : {color:'green'}
+
+
+
+    const handleOpen = () => setOpen(true);
 
     useEffect(() => {
         const list = {
@@ -34,29 +46,17 @@ const Group = () => {
             }).catch((error) => {
             console.log(error)
         })
-    }, [])
+    }, [list])
 
-    const create = () => {
-        const request = {
-            token: localStorage.getItem('access_token'),
-            name: newGroup,
-        }
-        axios.post('http://localhost:8088/admin/groups/create', request)
-            .then((res) => {
-                console.log(res)
-            })
-            .catch((error) => {
-                console.log(error)
-            })
-    }
+
     return (
         <div className='group'>
-            <Accordion >
+            <Accordion>
                 <AccordionSummary
                     onClick={() => {
-                        withdrawList === '' ? setWithdrawList('list'):setWithdrawList('')
+                        withdrawList === '' ? setWithdrawList('list') : setWithdrawList('')
                     }}
-                    expandIcon={<ExpandMoreIcon />}
+                    expandIcon={<ExpandMoreIcon/>}
                     aria-controls="panel1a-content"
                     id="panel1a-header"
                 >
@@ -65,12 +65,31 @@ const Group = () => {
                 <AccordionDetails>
                     <Typography>
                         <div className='group_list'>
-                            { withdrawList === 'list' ? <TableContainer component={Paper}>
+                            <Stack className='addDep' direction="row" spacing={2}>
+                                <Button onClick={() => {
+                                    handleOpen()
+                                    setButtonClick('add')
+                                }} variant="contained" color="success">
+                                    Добавить
+                                </Button>
+                            </Stack>
+                            {withdrawList === 'list' ? <TableContainer component={Paper}>
                                 <Table sx={{minWidth: 650}} aria-label="simple table">
                                     <TableHead>
                                         <TableRow>
-                                            <TableCell>Id</TableCell>
+                                            <TableCell>id</TableCell>
                                             <TableCell>Имя</TableCell>
+                                            <TableCell>Голосовые вызовы</TableCell>
+                                            <TableCell>Выдео вызовы</TableCell>
+                                            <TableCell>Чат</TableCell>
+                                            <TableCell>Адрес чат сервера</TableCell>
+                                            <TableCell>Пороль sip</TableCell>
+                                            <TableCell>Адрес sip сервера</TableCell>
+                                            <TableCell>Порт sip</TableCell>
+                                            <TableCell>SIP proxy</TableCell>
+                                            <TableCell>STUN</TableCell>
+                                            <TableCell>Адрес сервера STUN</TableCell>
+                                            <TableCell>Транспорт</TableCell>
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
@@ -78,12 +97,55 @@ const Group = () => {
                                             <TableRow
                                                 style={{cursor: 'pointer'}}
                                                 onClick={() => {
+                                                    setSelectId(value.id)
+                                                    setButtonClick('change')
+                                                    handleOpen()
                                                 }}
                                                 key={index}
                                                 sx={{'&:last-child td, &:last-child th': {border: 0}}}
                                             >
                                                 <TableCell>{value.id}</TableCell>
                                                 <TableCell>{value.name}</TableCell>
+                                                <TableCell
+                                                    style={styleText(value.settings.is_call,false)}>
+                                                    {value.settings.is_call === false ? 'Нет' : 'Да'}
+                                                </TableCell>
+                                                <TableCell
+                                                    style={styleText(value.settings.is_vcall,false)}>
+                                                    {value.settings.is_vcall === false ? 'Нет' : 'да'}
+                                                </TableCell>
+                                                <TableCell
+                                                    style={styleText(value.settings.is_chat,false)}>
+                                                    {value.settings.is_chat === false ? 'Нет' : 'да'}
+                                                </TableCell>
+                                                <TableCell
+                                                    style={styleText(value.settings.chat_ip,false)}>
+                                                    {value.settings.chat_ip === null ? '' : value.settings.chat_ip}
+                                                </TableCell>
+                                                <TableCell
+                                                    style={styleText(value.settings.sip_pwd,false)}>
+                                                    {value.settings.sip_pwd === null ? '' : value.settings.sip_pwd}
+                                                </TableCell>
+                                                <TableCell
+                                                    style={styleText(value.settings.sip_ip,false)}>
+                                                    {value.settings.sip_ip === null ? '' : value.settings.sip_ip}
+                                                </TableCell>
+                                                <TableCell
+                                                    style={styleText(value.settings.sip_port,false)}>
+                                                    {value.settings.sip_port === null ? '' : value.settings.sip_port}
+                                                </TableCell>
+                                                <TableCell
+                                                    style={styleText(value.settings.sip_proxy,false)}>
+                                                    {value.settings.sip_proxy === null ? '' : value.settings.sip_proxy}</TableCell>
+                                                <TableCell
+                                                    style={styleText(value.settings.is_stun,false)}>
+                                                    {value.settings.is_stun === false ? 'Нет' : 'Да'}</TableCell>
+                                                <TableCell
+                                                    style={styleText(value.settings.stun_srv,false)}>
+                                                    {value.settings.stun_srv === null ? '' : value.settings.stun_srv}</TableCell>
+                                                <TableCell
+                                                    style={styleText(value.settings.transport,false)}>
+                                                    {value.settings.transport === null ? '' : value.settings.transport}</TableCell>
                                             </TableRow>
                                         ))}
                                     </TableBody>
@@ -93,8 +155,14 @@ const Group = () => {
                     </Typography>
                 </AccordionDetails>
             </Accordion>
-
-
+            <ModalGroup
+                list={list}
+                setList={setList}
+                buttonClick={buttonClick}
+                selectId={selectId}
+                open={open}
+                setOpen={setOpen
+                }/>
         </div>
     )
 }

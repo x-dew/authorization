@@ -1,17 +1,53 @@
-.group{
+.group {
     border-radius: 5px;
-    border-bottom:0.5px solid #c1c1c1;
     width: 100%;
+    margin-bottom: 20px;
 }
 
-.group_title{
-    margin: 20px 10px ;
+.group_title {
+    margin: 20px 10px;
     display: flex;
-    justify-content:space-between;
+    justify-content: space-between;
     align-items: center;
 }
-.group_title h2{
+
+.group_title h2 {
     margin: 0;
     font-weight: 500;
     color: #7c7c7c;
+}
+
+.addGroupButton {
+    font-size: 11px !important;
+    width: 100%;
+    max-width: 90px;
+}
+
+.addGroupInput {
+    /*display: flex;*/
+    align-items: start;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.inputBlock {
+    width: 100% !important;
+    /*max-width: 280px;*/
+    /*display: flex;*/
+    /*flex-direction: column;*/
+}
+
+.inputBlock .css-1u3bzj6-MuiFormControl-root-MuiTextField-root {
+    width: 100% !important;
+    margin-bottom: 10px;
+}
+
+.addTitle {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+}
+
+.group .css-1ygcj2i-MuiTableCell-root{
+    color: black!important;
 }
