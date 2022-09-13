@@ -23,12 +23,8 @@ const style = {
     pb: 3,
 };
 
-
-
-
 const ModalUser = ({restartList, setOpen, open, setRestartList, addUser, userChangeId}) => {
     const handleClose = () => setOpen(false);
-
     return (
         <div>
             <Modal
@@ -50,6 +46,7 @@ const ModalUser = ({restartList, setOpen, open, setRestartList, addUser, userCha
                         </div>
                         <div className='modalInput'>
                             <UserAdd
+                                addUser={addUser}
                                 restartList={restartList}
                                 setRestartList={setRestartList}
                                 handleClose={handleClose}/>

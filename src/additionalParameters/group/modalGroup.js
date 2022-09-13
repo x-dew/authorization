@@ -1,7 +1,5 @@
 import React from 'react'
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import Backdrop from "@mui/material/Backdrop";
 import Add from "./addChangeGroup/add";
@@ -18,7 +16,7 @@ const style = {
     boxShadow: 24,
     p: 4,
 };
-const ModalGroup = ({open, setOpen, selectId, buttonClick, setList, list}) => {
+const ModalGroup = ({open, setOpen, selectId, buttonClick, setRestartList,restartList}) => {
     const handleClose = () => setOpen(false);
     return (
         <div className='modalParameters'>
@@ -35,14 +33,14 @@ const ModalGroup = ({open, setOpen, selectId, buttonClick, setList, list}) => {
             >
                 <Box sx={style}>{buttonClick === 'add' ?
                     <Add
+                        restartList={restartList}
                         setOpen={setOpen}
-                        setList={setList}
-                        list={list}
+                        setRestartList={setRestartList}
                         handleClose={handleClose}/> :
                     <Change
+                        restartList={restartList}
                         setOpen={setOpen}
-                        setList={setList}
-                        list={list}
+                        setRestartList={setRestartList}
                         handleClose={handleClose}
                         selectId={selectId}/>}
                 </Box>

@@ -29,6 +29,26 @@
   color: #61dafb;
 }
 
+::-webkit-scrollbar {
+  height:10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #d1cbcb;
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #1c8bd5;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

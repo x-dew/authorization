@@ -1,4 +1,4 @@
-import React, {useState,useEffect} from "react";
+import React, {useState, useEffect} from "react";
 import './listUser.css'
 import axios from "axios";
 import Table from '@mui/material/Table';
@@ -22,32 +22,27 @@ const ListUser = React.memo(() => {
 
     const handleOpen = () => setOpen(true);
 
-    const [restartList, setRestartList] = useState(1)
+    const [restartList, setRestartList] = useState(false)
     const [userChangeId, setUserChangeId] = useState('')
 
     const navigate = useNavigate();
-
-
-    const listFunction = () => {
+    useEffect(() => {
         axios.post(`http://localhost:8088/admin/users/list`, {
             token: localStorage.getItem('access_token')
         }).then((res) => {
             setUserBlock(res.data.users)
         }).catch((error) => {
-            navigate("/authorization")
+            navigate("login")
+            localStorage.setItem('access_token', '')
             console.log(error)
         })
-
-    }
-
-    useEffect(()=>{listFunction()},[restartList])
+    }, [restartList])
 
     return (
         <div className='admin'>
             <div className='userBlock'>
                 <div className='userBlockHeader'>
                     <h2>Пользователи</h2>
-
                     <Stack direction="row" spacing={2}>
                         <Button onClick={() => {
                             handleOpen()
@@ -76,7 +71,6 @@ const ListUser = React.memo(() => {
                                             setUserChangeId(value.id)
                                             handleOpen()
                                             setAddUser('userChange')
-
                                         }}
                                         key={index}
                                         sx={{'&:last-child td, &:last-child th': {border: 0}}}
@@ -92,7 +86,6 @@ const ListUser = React.memo(() => {
                     </TableContainer>
                 </div>
             </div>
-            <AdditionalParameters/>
             <ModalUser
                 userChangeId={userChangeId}
                 addUser={addUser}

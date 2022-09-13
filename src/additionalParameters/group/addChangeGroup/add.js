@@ -11,12 +11,12 @@ import {useState} from "react";
 import Joi from "joi";
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 
-const Add = ({setOpen, setList, list}) => {
+const Add = ({setOpen,setRestartList,restartList}) => {
     const [errorValidate, setErrorValidate] = useState({})
+    const [errorSipPort, setErrorSipPort] = useState('')
     const [state, setState] = useState({
-        name: "",
+        name: '',
         token: localStorage.getItem('access_token'),
-
         setting: {
             sip_port: null,
             is_call: false,
@@ -58,9 +58,15 @@ const Add = ({setOpen, setList, list}) => {
                 }))
             })
         } else {
-            axios.post('http://localhost:8088/admin/groups/create', state)
+            const data = {
+                ...state, setting: {
+                    ...state.setting,
+                    "sip_port": state.setting.sip_port === '' ? null : !/[a-zA-Z]+/.test(state.setting.sip_port) ? Number(state.setting.sip_port) : state.setting.sip_port,
+                }
+            }
+            axios.post('http://localhost:8088/admin/groups/create', data)
                 .then((res) => {
-                    setList(list + 1)
+                    setRestartList(restartList + 1,)
                     setOpen(false)
                 })
                 .catch((error) => {
@@ -75,8 +81,8 @@ const Add = ({setOpen, setList, list}) => {
                 <h3>Добавить группу</h3>
                 <HighlightOffIcon
                     fontSize={"large"}
-                    style={{cursor:'pointer'}}
-                    onClick={()=>setOpen(false)}/>
+                    style={{cursor: 'pointer'}}
+                    onClick={() => setOpen(false)}/>
             </div>
             <Box
                 className='addGroupInput'
@@ -92,10 +98,9 @@ const Add = ({setOpen, setList, list}) => {
                         onChange={(e) => {
                             setState({...state, name: e.target.value})
                         }} name='name'
-                        id="outlined-basic"
                         error={!!errorValidate.username}
                         helperText={errorValidate.username}
-                        value={state.name}
+                        value={state.name == null ? '' : state.name}
                         label="Имя"
                         variant="outlined"/>
                     <FormGroup>
@@ -105,10 +110,11 @@ const Add = ({setOpen, setList, list}) => {
                                 setting: {...state.setting, is_call: event.target.checked}
                             })}
                                              checked={state.setting.is_call}/>} label="Голосовые вызовы"/>
-                        <FormControlLabel control={<Switch onChange={event => {
-                            setState({...state, setting: {...state.setting, is_vcall: event.target.checked}})
-                            console.log(event)
-                        }} checked={state.setting.is_vcall}/>} label="Выдео вызовы"/>
+                        <FormControlLabel
+                            control={<Switch onChange={event => {
+                                setState({...state, setting: {...state.setting, is_vcall: event.target.checked}})
+                            }} checked={state.setting.is_vcall}/>}
+                            label="Выдео вызовы"/>
                         <FormControlLabel control={<Switch onChange={event => {
                             setState({...state, setting: {...state.setting, is_chat: event.target.checked}})
                         }} checked={state.setting.is_chat}/>} label="Чат"/>
@@ -116,48 +122,53 @@ const Add = ({setOpen, setList, list}) => {
                     <TextField
                         onChange={(e) => {
                             setState({...state, setting: {...state.setting, chat_ip: e.target.value}})
-                        }} name='chat_ip'
+                        }}
+                        name='chat_ip'
+                        value={state.setting.chat_ip == null ? '' : state.setting.chat_ip}
                         type='text'
-                        id="outlined-basic"
                         label="Адрес чат сервера"
                         variant="outlined"/>
                     <TextField
                         onChange={(e) => {
                             setState({...state, setting: {...state.setting, sip_pwd: e.target.value}})
-                        }} name='sip_pwd'
-                        type='password'
-                        id="outlined-basic"
+                        }}
+                        value={state.setting.sip_pwd == null ? '' : state.setting.sip_pwd}
+                        name='sip_pwd'
                         label="Пароль sip"
                         variant="outlined"/>
                     <TextField
                         onChange={(e) => {
                             setState({...state, setting: {...state.setting, sip_ip: e.target.value}})
-                        }} name='sip_ip'
-                        id="outlined-basic"
+                        }}
+                        value={state.setting.sip_ip == null ? '' : state.setting.sip_ip}
+                        name='sip_ip'
                         label="Адрес sip сервера"
                         variant="outlined"/>
                 </div>
                 <div className='inputBlock'>
-
                     <TextField
                         onChange={(e) => {
-                            if(!/[a-zA-Z]+/.test(e.target.value)){
-                                setState({...state, setting: {...state.setting, sip_port: Number(e.target.value)}})
-                            }else {
-                                setState({...state, setting: {...state.setting, sip_port: ''}})
-                            }
-                        }} name='sip_port'
+                            if (/[a-zA-Z]+/.test(e.target.value)) {
+                                setErrorSipPort('Недопустимые символы')
+                            } else {
+                                setState({...state, setting: {...state.setting, sip_port: e.target.value}})
+                                setErrorSipPort('')
+                            }}}
+
+                        name='sip_port'
                         type='text'
-                        id="outlined-basic"
-                        value={state.setting.sip_port}
+                        value={state.setting.sip_port == null ? '' : state.setting.sip_port}
+                        error={!!errorSipPort}
+                        helperText={errorSipPort}
                         label="Порт sip"
                         variant="outlined"/>
                     <TextField
                         onChange={(e) => {
                             setState({...state, setting: {...state.setting, sip_proxy: e.target.value}})
-                        }} name='sip_proxy'
+                        }}
+                        value={state.setting.sip_proxy == null ? '' : state.setting.sip_proxy}
+                        name='sip_proxy'
                         type='text'
-                        id="outlined-basic"
                         label="SIP proxy"
                         variant="outlined"/>
                     <FormControlLabel control={<Switch onChange={event => {
@@ -166,17 +177,19 @@ const Add = ({setOpen, setList, list}) => {
                     <TextField
                         onChange={(e) => {
                             setState({...state, setting: {...state.setting, stun_srv: e.target.value}})
-                        }} name='stun_srv'
+                        }}
+                        value={state.setting.stun_srv == null ? '' : state.setting.stun_srv}
+                        name='stun_srv'
                         type='text'
-                        id="outlined-basic"
                         label="Адрес сервера STUN"
                         variant="outlined"/>
                     <TextField
                         onChange={(e) => {
                             setState({...state, setting: {...state.setting, transport: e.target.value}})
-                        }} name='transport'
+                        }}
+                        value={state.setting.transport == null ? '' : state.setting.transport}
+                        name='transport'
                         type='text'
-                        id="outlined-basic"
                         label="Транспорт"
                         variant="outlined"/>
                 </div>

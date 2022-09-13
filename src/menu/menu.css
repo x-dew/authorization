@@ -1,0 +1,21 @@
+.additionalMenu {
+    display: flex;
+    align-items: center;
+    margin-right: 30px !important;
+    color: white !important;
+}
+
+.additionalMenu p {
+    margin-right: 10px;
+}
+
+.linkAdditional {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.menuHeader {
+    justify-content: space-between !important;
+    width: 100% !important;
+}

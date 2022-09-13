@@ -1,18 +1,26 @@
 import React, {useReducer, useState} from "react";
 import './authorizationPage.css'
-import {reduce, signIn} from '../../reduce'
+import {reduce, signIn} from '../reduce'
 import axios from 'axios';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import {useNavigate} from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
 
-const AuthorizationPage = ({input}) => {
+const AuthorizationPage = () => {
 
     const [authorization, dispatchAuthorization] = useReducer(reduce, signIn)
     const [errorAxios, setErrorAxios] = useState('')
     const [adminPage, setAdminPage] = useState('1')
-
+    const navigate = useNavigate();
+    const value = (e) => {
+        dispatchAuthorization({
+            payload: {
+                name: e.target.name,
+                value: e.target.value
+            }
+        })
+    }
 
     const getAxios = () => {
         axios.post(`http://localhost:8088/auth/signin`, {
@@ -24,7 +32,7 @@ const AuthorizationPage = ({input}) => {
                 localStorage.setItem('refresh_token', response.data.auth.refresh_token)
                 setErrorAxios('')
                 setTimeout(() => {
-                    navigate("/admin");
+                    navigate("/");
                     setAdminPage('1')
                 }, 2000)
 
@@ -35,7 +43,7 @@ const AuthorizationPage = ({input}) => {
             setAdminPage('1')
         });
     }
-    const navigate = useNavigate();
+
     return (
         <div className='authorizationPage'>
             <div className='link'>
@@ -51,14 +59,14 @@ const AuthorizationPage = ({input}) => {
             >
                 <TextField
                     className=' input'
-                    onChange={(e) => input(dispatchAuthorization, e)}
+                    onChange={(e) => value(e)}
                     id="outlined-basic"
                     label="Логин"
                     variant="outlined"
                     name='login'/>
                 <TextField
                     className=' input'
-                    onChange={(e) => input(dispatchAuthorization, e)}
+                    onChange={(e) => value(e)}
                     id="outlined-basic"
                     label="Пароль"
                     variant="outlined"
@@ -68,10 +76,14 @@ const AuthorizationPage = ({input}) => {
 
             {adminPage === '0' ? <CircularProgress color="success"/> : ''}
             <div className='buttonAuthorization'>
-                <button onClick={() => {
-                    setAdminPage('0')
-                    getAxios()
-                }} className='button' type='submit'>Отправить
+                <button
+                    onClick={() => {
+                        setAdminPage('0')
+                        getAxios()
+                    }}
+                    className='button'
+                    style={{cursor: 'pointer'}}
+                    type='submit'>Отправить
                 </button>
             </div>
             {

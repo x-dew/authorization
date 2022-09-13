@@ -3,10 +3,10 @@ import './header.css'
 import MenuAdmin from "../menu/menuAdmin";
 
 
-const Header = ({setAddUser}) => {
+const Header = ({login}) => {
     return (
         <div className='header'>
-            <MenuAdmin setAddUser={setAddUser}/>
+            <MenuAdmin login={login}/>
         </div>
     )
 }

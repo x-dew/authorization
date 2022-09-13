@@ -11,14 +11,11 @@ import Joi from "joi"
 
 
 const UserChange = React.memo(({handleClose, setRestartList, userChangeId, restartList}) => {
-
-
     const [groupId, setGroupId] = useState('')
     const [departmentId, setDepartmentId] = useState('')
-
     const [positionId, setPositionId] = useState('')
+
     const [errorValidate, setErrorValidate] = useState({})
-    console.log(errorValidate)
 
     //Списки
     const [groups, setGroups] = useState([])
@@ -26,7 +23,7 @@ const UserChange = React.memo(({handleClose, setRestartList, userChangeId, resta
     const [positions, setPositions] = useState([])
     //Данные пользователя
     const [user, setUser] = useState({})
-    const styleText = (value,text) => value.name === text ? {color: 'red'} : {color: 'black'}
+    const styleText = (value, text) => value.name === text ? {color: 'red'} : {color: 'black'}
 
 
     const handleChangeGroup = (event: SelectChangeEvent, name) => {
@@ -178,8 +175,7 @@ const UserChange = React.memo(({handleClose, setRestartList, userChangeId, resta
 
         axios.post('http://localhost:8088/admin/departments/list', {token: localStorage.getItem('access_token'),})
             .then((res) => {
-                console.log(departmentId)
-                res.data.departments.push(departmentId === '' ?{id: 1, name: 'Удалить Департамент'} : '')
+                res.data.departments.push(departmentId === '' ? {id: 1, name: 'Удалить Департамент'} : '')
                 setDepartments(res.data.departments)
             })
             .catch(error => console.log(error))
@@ -234,8 +230,7 @@ const UserChange = React.memo(({handleClose, setRestartList, userChangeId, resta
                             helperText={errorValidate.login}
                             name='login'
                             label='Логин'
-                            id="outlined-basic"
-                            value={user.login}
+                            value={user.login == null ? '' : user.login}
                             variant="outlined"/>
                         <TextField
                             onChange={(e) => {
@@ -245,9 +240,8 @@ const UserChange = React.memo(({handleClose, setRestartList, userChangeId, resta
                             type='text'
                             error={!!errorValidate.password}
                             helperText={errorValidate.password}
-                            id="outlined-basic"
                             label='Пароль'
-                            value={user.pwd}
+                            value={user.pwd == null ? '' : user.login}
                             variant="outlined"/>
 
                     </div> : ''
@@ -257,8 +251,7 @@ const UserChange = React.memo(({handleClose, setRestartList, userChangeId, resta
                         setUser(user => ({...user, name: e.target.value}))
                     }}
                     name='name'
-                    id="outlined-basic"
-                    value={user.name}
+                    value={user.name == null ? '' : user.name}
                     error={!!errorValidate.username}
                     helperText={errorValidate.username}
                     label='Имя'
@@ -267,25 +260,23 @@ const UserChange = React.memo(({handleClose, setRestartList, userChangeId, resta
                     onChange={(e) => {
                         setUser(user => ({...user, number: e.target.value}))
                     }}
-                    value={user.number}
+                    value={user.number == null ? '' : user.number}
                     label='Номер'
                     name='numbers'
                     type='text'
                     error={!!errorValidate.number}
                     helperText={errorValidate.number}
-                    id="outlined-basic"
                     variant="outlined"/>
                 <TextField
                     onChange={(e) => {
                         setUser(user => ({...user, email: e.target.value}))
                     }}
-                    value={user.email}
+                    value={user.email == null ? '' : user.email}
                     label='Email'
                     name='emails'
                     type='email'
                     error={!!errorValidate.email}
                     helperText={errorValidate.email}
-                    id="outlined-basic"
                     variant="outlined"/>
             </Box>
             <div className='userSelect'>
@@ -293,7 +284,7 @@ const UserChange = React.memo(({handleClose, setRestartList, userChangeId, resta
                     <InputLabel
                         id="demo-multiple-name-label">Группа</InputLabel>
                     <Select
-                        value={groupId}
+                        value={groupId == null ? '' : groupId}
                         labelId="demo-multiple-name-label"
                         id="demo-multiple-name"
                         onChange={handleChangeGroup}
@@ -303,7 +294,7 @@ const UserChange = React.memo(({handleClose, setRestartList, userChangeId, resta
                         {
                             groups.map((value, index) => {
                                 return <MenuItem
-                                    style={styleText(value,'Удалить Группу')}
+                                    style={styleText(value, 'Удалить Группу')}
                                     key={index} value={value.id}>{value.name}</MenuItem>
                             })
                         }
@@ -313,7 +304,7 @@ const UserChange = React.memo(({handleClose, setRestartList, userChangeId, resta
                     <InputLabel
                         id="demo-multiple-name-label">Департамент</InputLabel>
                     <Select
-                        value={departmentId}
+                        value={departmentId == null ? '' : departmentId}
                         labelId="demo-multiple-name-label"
                         id="demo-multiple-name"
                         name='departments'
@@ -323,7 +314,7 @@ const UserChange = React.memo(({handleClose, setRestartList, userChangeId, resta
                         {
                             departments.map((value, index) => {
                                 return <MenuItem
-                                    style={styleText(value,'Удалить Департамент')}
+                                    style={styleText(value, 'Удалить Департамент')}
                                     key={index} value={value.id}>{value.name}</MenuItem>
                             })
                         }
@@ -333,7 +324,7 @@ const UserChange = React.memo(({handleClose, setRestartList, userChangeId, resta
                     <InputLabel
                         id="demo-multiple-name-label">Должность</InputLabel>
                     <Select
-                        value={positionId}
+                        value={positionId == null ? '' : positionId}
                         onChange={handleChangeJob}
                         label="Name"
                         labelId="demo-multiple-name-label"
@@ -343,7 +334,7 @@ const UserChange = React.memo(({handleClose, setRestartList, userChangeId, resta
                         {
                             positions.map((value, index) => {
                                 return <MenuItem
-                                    style={styleText(value,'Удалить Должность')}
+                                    style={styleText(value, 'Удалить Должность')}
                                     key={index} value={value.id}>{value.name}</MenuItem>
                             })
                         }

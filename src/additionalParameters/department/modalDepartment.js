@@ -6,9 +6,10 @@ import Modal from '@mui/material/Modal';
 import Backdrop from "@mui/material/Backdrop";
 import TextField from '@mui/material/TextField';
 import Stack from "@mui/material/Stack";
-import DeleteSharpIcon from '@mui/icons-material/DeleteSharp';
-import Grid from '@mui/material/Grid';
 import ClearIcon from '@mui/icons-material/Clear';
+import Joi from "joi";
+import axios from "axios";
+import {useState} from "react";
 
 const style = {
     position: 'absolute',
@@ -25,18 +26,114 @@ const style = {
 const ModalDepartment = ({
                              selectName,
                              setSelectName,
-                             open,
-                             creat,
-                             newDepartment,
-                             setOpen,
                              addDepartment,
-                             setNewDepartment,
-                             deleteDepartment,
-                             upData,
-                             errorValidate
+                             selectedId,
+                             restartList,
+                             setRestartList,
+                             open,
+                             setOpen
                          }) => {
-    const handleClose = () => setOpen(false);
+    const [newDepartment, setNewDepartment] = useState('')
+    const [errorValidate, setErrorValidate] = useState({})
 
+    const handleClose = () => setOpen(false);
+    const create = () => {
+        const schema = Joi.object({
+            username: Joi.string()
+                .required()
+                .pattern(/^[a-zA-Zа-яА-Я]+$/)
+                .min(3)
+                .messages({
+                    'string.pattern.base': 'недопустимые символы',
+                    'string.empty': "введите имя",
+                    'string.min': 'длинна не должа быть меньше 3 символов',
+                    'string.base': 'недопустимые символы'
+                }),
+        })
+        const validate = schema.validate({
+            username: newDepartment
+        })
+        setErrorValidate({})
+        if (validate.error) {
+            validate.error.details.forEach(v => {
+                console.log(v)
+                setErrorValidate(e => ({
+                    ...e,
+                    [v.context.key]: v.message
+                }))
+            })
+        } else {
+            const dispatchData = {
+                token: localStorage.getItem('access_token'),
+                name: newDepartment,
+            }
+            axios.post('http://localhost:8088/admin/departments/create', dispatchData)
+                .then((res) => {
+                    setNewDepartment('')
+                    setRestartList(restartList +1)
+                    setOpen(false)
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
+        }
+
+    }
+
+    const upData = () => {
+        const schema = Joi.object({
+            username: Joi.string()
+                .required()
+                .pattern(/^[a-zA-Zа-яА-Я]+$/)
+                .min(3)
+                .messages({
+                    'string.pattern.base': 'недопустимые символы',
+                    'string.empty': "введите имя",
+                    'string.min': 'длинна не должа быть меньше 3 символов',
+                    'string.base': 'недопустимые символы'
+                }),
+        })
+        const validate = schema.validate({
+            username: selectName
+        })
+        setErrorValidate({})
+        if (validate.error) {
+            validate.error.details.forEach(v => {
+                console.log(v)
+                setErrorValidate(e => ({
+                    ...e,
+                    [v.context.key]: v.message
+                }))
+            })
+        } else {
+            const dispatchData = {
+                token: localStorage.getItem('access_token'),
+                name: selectName,
+            }
+            axios.put(`http://localhost:8088/admin/departments/${selectedId}`, dispatchData)
+                .then((res) => {
+                    setRestartList(restartList +1)
+                    setOpen(false)
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
+        }
+
+    }
+
+    const deleteDepartment = () => {
+        axios.delete(`http://localhost:8088/admin/departments/${selectedId}`, {
+            data: {token: localStorage.getItem('access_token')}
+        },)
+            .then((res) => {
+                setOpen(false)
+                setRestartList(restartList +1)
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+    }
     return (
         <div className='departmentModal'>
             <Modal
@@ -73,7 +170,7 @@ const ModalDepartment = ({
                                 </TextField>
                                 <Stack className='addDep' direction="row" spacing={2}>
                                     <Button onClick={() => {
-                                        creat()
+                                        create()
                                     }}
                                             variant="contained"
                                             color="success"
@@ -88,7 +185,7 @@ const ModalDepartment = ({
                                 variant="h6"
                                 component="p"
                                 className='inputFlex'>
-                                <p className='modalText'>Редактирование Департаментов</p>
+                                <span className='modalText'>Редактирование Департаментов</span>
                                 <ClearIcon
                                     style={{cursor: 'pointer'}}
                                     onClick={() => handleClose()}
@@ -116,12 +213,14 @@ const ModalDepartment = ({
                                     >
                                         Изменить
                                     </Button>
-                                    <Grid
+                                    <Button
                                         onClick={() => deleteDepartment()}
-                                        style={{cursor: 'pointer'}}
-                                        item xs={8}>
-                                        <DeleteSharpIcon/>
-                                    </Grid>
+                                        variant="contained"
+                                        style={{background: 'red', color: 'white'}}
+                                        disabled={!selectName}
+                                    >
+                                        Удалить
+                                    </Button>
                                 </Stack>
                             </div>
                         </div>

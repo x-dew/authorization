@@ -1,7 +1,10 @@
 .position{
     border-radius: 5px;
     width: 100%;
-    display: contents;
+    max-width: 700px;
+    padding: 20px;
+    margin: 30px auto;
+    border: 1px solid gainsboro;
 }
 
 .position_title{
@@ -9,12 +12,21 @@
     display: flex;
     justify-content:space-between;
     align-items: center;
-}
-.position_title h2{
-    margin: 0;
-    font-weight: 500;
+    font-size: 23px!important;
     color: #7c7c7c;
 }
 .accordions{
     width: 95%;
+}
+.addPos {
+    margin-bottom: 15px;
+    display: flex;
+}
+
+.changePos{
+    margin-left: 20px;
+}
+
+.position .css-ke5b6m-MuiButtonBase-root-MuiButton-root {
+    background-color: #1c8bd5 !important;
 }

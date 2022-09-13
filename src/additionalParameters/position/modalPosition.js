@@ -6,9 +6,10 @@ import Modal from '@mui/material/Modal';
 import Backdrop from "@mui/material/Backdrop";
 import TextField from '@mui/material/TextField';
 import Stack from "@mui/material/Stack";
-import DeleteSharpIcon from '@mui/icons-material/DeleteSharp';
-import Grid from '@mui/material/Grid';
 import ClearIcon from '@mui/icons-material/Clear';
+import Joi from "joi";
+import axios from "axios";
+import {useState} from "react";
 
 const style = {
     position: 'absolute',
@@ -23,19 +24,117 @@ const style = {
 };
 
 const ModalPosition = ({
-                             selectName,
-                             setSelectName,
-                             open,
-                             creat,
-                             newPosition,
-                             setOpen,
-                             addPosition,
-                             setNewPosition,
-                             deletePosition,
-                             upData,
-                             errorValidate
-                         }) => {
+                           selectName,
+                           setSelectName,
+                           open,
+                           restartList,
+                           setRestartList,
+                           setOpen,
+                           addPosition,
+                           selectedId
+                       }) => {
+
+    const [errorValidate, setErrorValidate] = useState({})
+    const [newPosition, setNewPosition] = useState('')
+
     const handleClose = () => setOpen(false);
+    const create = () => {
+        const schema = Joi.object({
+            username: Joi.string()
+                .required()
+                .pattern(/^[a-zA-Zа-яА-Я]+$/)
+                .min(3)
+                .messages({
+                    'string.pattern.base': 'недопустимые символы',
+                    'string.empty': "введите имя",
+                    'string.min': 'длинна не должа быть меньше 3 символов',
+                    'string.base': 'недопустимые символы'
+                }),
+        })
+        const validate = schema.validate({
+            username: newPosition
+        })
+        setErrorValidate({})
+        if (validate.error) {
+            validate.error.details.forEach(v => {
+                console.log(v)
+                setErrorValidate(e => ({
+                    ...e,
+                    [v.context.key]: v.message
+                }))
+            })
+        } else {
+            const dispatchData = {
+                token: localStorage.getItem('access_token'),
+                name: newPosition,
+            }
+            axios.post('http://localhost:8088/admin/positions/create', dispatchData)
+                .then((res) => {
+                    setNewPosition('')
+                    setRestartList(restartList +1)
+                    setOpen(false)
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
+        }
+
+    }
+
+    const upData = () => {
+        const schema = Joi.object({
+            username: Joi.string()
+                .required()
+                .pattern(/^[a-zA-Zа-яА-Я]+$/)
+                .min(3)
+                .messages({
+                    'string.pattern.base': 'недопустимые символы',
+                    'string.empty': "введите имя",
+                    'string.min': 'длинна не должа быть меньше 3 символов',
+                    'string.base': 'недопустимые символы'
+                }),
+        })
+        const validate = schema.validate({
+            username: selectName
+        })
+        setErrorValidate({})
+        if (validate.error) {
+            validate.error.details.forEach(v => {
+                console.log(v)
+                setErrorValidate(e => ({
+                    ...e,
+                    [v.context.key]: v.message
+                }))
+            })
+        } else {
+            const dispatchData = {
+                token: localStorage.getItem('access_token'),
+                name: selectName,
+            }
+            axios.put(`http://localhost:8088/admin/positions/${selectedId}`, dispatchData)
+                .then((res) => {
+                    setRestartList(restartList +1)
+                    setOpen(false)
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
+        }
+
+    }
+
+    const deletePosition = () => {
+        axios.delete(`http://localhost:8088/admin/positions/${selectedId}`, {
+            data: {token: localStorage.getItem('access_token')}
+        },)
+            .then((res) => {
+                setOpen(false)
+                setRestartList(restartList +1)
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+    }
 
     return (
         <div className='positionModal'>
@@ -73,7 +172,7 @@ const ModalPosition = ({
                                 </TextField>
                                 <Stack className='addDep' direction="row" spacing={2}>
                                     <Button onClick={() => {
-                                        creat()
+                                        create()
                                     }}
                                             variant="contained"
                                             color="success"
@@ -88,7 +187,7 @@ const ModalPosition = ({
                                 variant="h6"
                                 component="p"
                                 className='inputFlex'>
-                                <p className='modalText'>Редактирование Должностей</p>
+                                <span className='modalText'>Редактирование Должностей</span>
                                 <ClearIcon
                                     style={{cursor: 'pointer'}}
                                     onClick={() => handleClose()}
@@ -104,7 +203,7 @@ const ModalPosition = ({
                                     value={selectName}
                                     sx={{mt: 2}}>
                                 </TextField>
-                                <Stack className='addDep' direction="row" spacing={2}>
+                                <Stack className='changePos' direction="row" spacing={2}>
                                     <Button onClick={() => {
                                         if (selectName !== '') {
                                             upData()
@@ -116,12 +215,14 @@ const ModalPosition = ({
                                     >
                                         Изменить
                                     </Button>
-                                    <Grid
+                                    <Button
                                         onClick={() => deletePosition()}
-                                        style={{cursor: 'pointer'}}
-                                        item xs={8}>
-                                        <DeleteSharpIcon/>
-                                    </Grid>
+                                        variant="contained"
+                                        style={{background: 'red', color: 'white'}}
+                                        disabled={!selectName}
+                                    >
+                                        Удалить
+                                    </Button>
                                 </Stack>
                             </div>
                         </div>

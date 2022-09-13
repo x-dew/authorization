@@ -10,7 +10,7 @@ import './userAdd.css'
 import axios from "axios";
 import Joi from "joi";
 
-const UserAdd = ({handleClose, setRestartList, restartList}) => {
+const UserAdd = ({handleClose, setRestartList, restartList,addUser}) => {
 
     const [user, dispatchUsers] = useReducer(userReduce, users)
 
@@ -175,7 +175,7 @@ const UserAdd = ({handleClose, setRestartList, restartList}) => {
         }).catch((error) => {
             console.log(error)
         })
-    }, [])
+    }, [addUser])
     return (
         <div className='addUserInput'>
             <div className='checkbox'>
@@ -221,8 +221,7 @@ const UserAdd = ({handleClose, setRestartList, restartList}) => {
                     <TextField
                         onChange={changeObject}
                         name='login'
-                        value={user.login}
-                        id="outlined-basic"
+                        value={user.login == null ? '' : user.login}
                         error={!!checkErrorValidate.login}
                         helperText={checkErrorValidate.login}
                         label="Логин"
@@ -231,19 +230,17 @@ const UserAdd = ({handleClose, setRestartList, restartList}) => {
                         onChange={changeObject}
                         name='pwd'
                         type='password'
-                        id="outlined-basic"
                         error={!!checkErrorValidate.password}
                         helperText={checkErrorValidate.password}
                         label="Пароль"
-                        value={user.pwd}
+                        value={user.pwd == null ? '' : user.pwd}
                         variant="outlined"/>
                 </div> : ''
                 }
                 <TextField
                     onChange={changeObject}
                     name='name'
-                    value={user.name}
-                    id="outlined-basic"
+                    value={user.name == null ? '' : user.name}
                     error={!!checkErrorValidate.username}
                     helperText={checkErrorValidate.username}
                     label="Имя"
@@ -255,9 +252,8 @@ const UserAdd = ({handleClose, setRestartList, restartList}) => {
                         }
                     }}
                     name='numbers'
-                    value={user.numbers}
+                    value={user.numbers == null ? '' : user.numbers}
                     type='phone'
-                    id="outlined-basic"
                     error={!!checkErrorValidate.number}
                     helperText={checkErrorValidate.number}
                     label="Телефон"
@@ -265,9 +261,8 @@ const UserAdd = ({handleClose, setRestartList, restartList}) => {
                 <TextField
                     onChange={changeObject}
                     name='emails'
-                    value={user.emails}
+                    value={user.emails == null ? '' : user.emails}
                     type='email'
-                    id="outlined-basic"
                     error={!!checkErrorValidate.email}
                     helperText={checkErrorValidate.email}
                     label="Email"
@@ -279,7 +274,7 @@ const UserAdd = ({handleClose, setRestartList, restartList}) => {
                     <Select
                         labelId="demo-simple-select-standard-label"
                         id="demo-simple-select-standard"
-                        value={group}
+                        value={group == null ? '' :  group}
                         onChange={(e) => {
                             handleChangeGroup(e)
                             changeObject(e)
@@ -300,7 +295,7 @@ const UserAdd = ({handleClose, setRestartList, restartList}) => {
                     <Select
                         labelId="demo-simple-select-standard-label"
                         id="demo-simple-select-standard"
-                        value={department}
+                        value={department == null ? '' : department}
                         onChange={(e) => {
                             handleChangeDep(e)
                             changeObject(e)
@@ -320,7 +315,7 @@ const UserAdd = ({handleClose, setRestartList, restartList}) => {
                     <Select
                         labelId="demo-simple-select-standard-label"
                         id="demo-simple-select-standard"
-                        value={jobTitle}
+                        value={jobTitle == null ? '' : jobTitle}
                         onChange={(e) => {
                             handleChangeJob(e)
                             changeObject(e)

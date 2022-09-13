@@ -1,19 +1,17 @@
 .group {
     border-radius: 5px;
-    width: 100%;
-    margin-bottom: 20px;
+    width: auto;
+    padding: 20px;
+    margin: 30px;
+    border: 1px solid gainsboro;
 }
 
 .group_title {
     margin: 20px 10px;
     display: flex;
+    font-size: 23px !important;
     justify-content: space-between;
     align-items: center;
-}
-
-.group_title h2 {
-    margin: 0;
-    font-weight: 500;
     color: #7c7c7c;
 }
 
@@ -42,12 +40,33 @@
     margin-bottom: 10px;
 }
 
+.css-1elwnq4-MuiPaper-root-MuiAccordion-root:first-of-type {
+    width: 80% !important;
+}
+
 .addTitle {
     align-items: center;
     display: flex;
     justify-content: space-between;
 }
 
-.group .css-1ygcj2i-MuiTableCell-root{
-    color: black!important;
+.group .css-ke5b6m-MuiButtonBase-root-MuiButton-root {
+    background-color: #1c8bd5 !important;
+}
+
+.group .css-1ygcj2i-MuiTableCell-root {
+    color: black !important;
+}
+
+.buttonAdd {
+    margin-bottom: 15px;
+    display: flex;
+}
+
+.css-quj9j6-MuiTable-root {
+    margin-bottom: 40px;
+}
+
+.css-1ex1afd-MuiTableCell-root {
+    border-bottom: 1px solid #e0e0e0 !important;
 }

@@ -10,12 +10,12 @@ import {FormGroup} from "@mui/material";
 import Joi from "joi";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 
-const Change = ({selectId, setOpen, setList, list}) => {
+const Change = ({selectId, setOpen, setRestartList, restartList}) => {
 
     const [error, setError] = useState({})
     const [errorSipPort, setErrorSipPort] = useState('')
     const [state, setState] = useState({
-        name: "",
+        name: '',
         settings: {
             sip_port: null,
             is_call: false,
@@ -60,7 +60,7 @@ const Change = ({selectId, setOpen, setList, list}) => {
             const upData = {
                 name: state.name,
                 setting: {
-                    sip_port: state.settings.sip_port === '' ? null :!/[a-zA-Z]+/.test(state.settings.sip_port) ? Number(state.settings.sip_port) : state.settings.sip_port,
+                    sip_port: state.settings.sip_port === '' ? null : !/[a-zA-Z]+/.test(state.settings.sip_port) ? Number(state.settings.sip_port) : state.settings.sip_port,
                     is_call: state.settings.is_call,
                     is_vcall: state.settings.is_vcall,
                     is_chat: state.settings.is_chat,
@@ -77,7 +77,7 @@ const Change = ({selectId, setOpen, setList, list}) => {
             axios.put(`http://localhost:8088/admin/groups/${selectId}`, upData)
                 .then((e) => {
                     setOpen(false)
-                    setList(list + 1)
+                    setRestartList(restartList + 1)
                 }).catch((error) => {
                 console.log(error)
             })
@@ -90,7 +90,7 @@ const Change = ({selectId, setOpen, setList, list}) => {
             data: {token: localStorage.getItem('access_token')}
         }).then((e) => {
             setOpen(false)
-            setList(list + 1)
+            setRestartList(restartList + 1)
         })
             .catch((e) => {
                 console.log(e)
@@ -130,11 +130,10 @@ const Change = ({selectId, setOpen, setList, list}) => {
                             setState({...state, name: e.target.value})
                         }}
                         name='name'
-                        value={state.name}
+                        value={state.name == null ? '' : state.name}
                         label="Имя"
                         error={!!error.username}
                         helperText={error.username}
-                        id="outlined-basic"
                         variant="outlined"/>
                     <FormGroup>
                         <FormControlLabel
@@ -157,7 +156,6 @@ const Change = ({selectId, setOpen, setList, list}) => {
                         name='chat_ip'
                         value={state.settings.chat_ip === null ? '' : state.settings.chat_ip}
                         label="Адрес чат сервера"
-                        id="outlined-basic"
                         variant="outlined"/>
                     <TextField
                         onChange={(e) => {
@@ -165,9 +163,7 @@ const Change = ({selectId, setOpen, setList, list}) => {
                         }}
                         name='sip_pwd'
                         value={state.settings.sip_pwd === null ? '' : state.settings.sip_pwd}
-                        type='password'
                         label="Пароль sip"
-                        id="outlined-basic"
                         variant="outlined"/>
                     <TextField
                         onChange={(e) => {
@@ -176,11 +172,9 @@ const Change = ({selectId, setOpen, setList, list}) => {
                         name='sip_ip'
                         value={state.settings.sip_ip === null ? '' : state.settings.sip_ip}
                         label="Адрес sip сервера"
-                        id="outlined-basic"
                         variant="outlined"/>
                 </div>
                 <div className='inputBlock'>
-
                     <TextField
                         onChange={(e) => {
                             if (/[a-zA-Z]+/.test(e.target.value)) {
@@ -189,11 +183,10 @@ const Change = ({selectId, setOpen, setList, list}) => {
                             setState({...state, settings: {...state.settings, sip_port: e.target.value}})
                         }}
                         name='sip_port'
-                        value={state.settings.sip_port}
+                        value={state.settings.sip_port == null ? '' : state.settings.sip_port}
                         label="Порт sip"
                         error={!!errorSipPort}
                         helperText={errorSipPort}
-                        id="outlined-basic"
                         variant="outlined"/>
                     <TextField
                         onChange={(e) => {
@@ -202,7 +195,6 @@ const Change = ({selectId, setOpen, setList, list}) => {
                         name='sip_proxy'
                         value={state.settings.sip_proxy === null ? '' : state.settings.sip_proxy}
                         label="SIP proxy"
-                        id="outlined-basic"
                         variant="outlined"/>
                     <FormControlLabel control={<Switch onChange={event => {
                         setState({...state, settings: {...state.settings, is_stun: event.target.checked}})
@@ -214,7 +206,6 @@ const Change = ({selectId, setOpen, setList, list}) => {
                         name='stun_srv'
                         value={state.settings.stun_srv === null ? '' : state.settings.stun_srv}
                         label="Адрес сервера STUN"
-                        id="outlined-basic"
                         variant="outlined"/>
                     <TextField
                         onChange={(e) => {
@@ -223,7 +214,6 @@ const Change = ({selectId, setOpen, setList, list}) => {
                         name='transport'
                         value={state.settings.transport === null ? '' : state.settings.transport}
                         label="Транспорт"
-                        id="outlined-basic"
                         variant="outlined"/>
                 </div>
 
@@ -233,12 +223,15 @@ const Change = ({selectId, setOpen, setList, list}) => {
                     style={{background: 'red'}}
                     onClick={(e) => {
                         deleteGroup()
-                    }} variant="contained" color="success">
+                    }}
+                    variant="contained"
+                    color="success">
                     Удалить
                 </Button>
                 <Button onClick={() => {
                     upDataGroup()
-                }} variant="contained" color="success">
+                }} variant="contained"
+                        color="success">
                     Изменить
                 </Button>
             </Stack>

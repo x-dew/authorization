@@ -1,6 +1,10 @@
 .department {
     border-radius: 5px;
     width: 100%;
+    max-width: 700px;
+    padding: 20px;
+    margin: 30px auto;
+    border: 1px solid gainsboro;
 }
 
 .depart_title {
@@ -8,18 +12,21 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    color: #7c7c7c;
+    font-size: 23px !important;
 }
 
-.depart_title h2 {
-    margin: 0;
-    font-weight: 500;
-    color: #7c7c7c;
-}
 
 .addDep {
     margin-bottom: 15px;
+    display: flex;
+    margin-left: 20px;
 }
 
 .addDepInput {
     margin: 15px 0
+}
+
+.department .css-ke5b6m-MuiButtonBase-root-MuiButton-root {
+    background-color: #1c8bd5 !important;
 }

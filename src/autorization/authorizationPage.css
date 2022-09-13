@@ -9,7 +9,7 @@
     background-position-x: center;
     background-position-y: center;
     background-repeat: no-repeat;
-    background-image: url("../../image/back.jpg");
+    background-image: url("../image/back.jpg");
     border-radius: 20px;
 }
 .link-text{
