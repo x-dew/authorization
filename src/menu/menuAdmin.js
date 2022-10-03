@@ -1,15 +1,12 @@
 import React, {useEffect} from "react";
 import './menu.css'
-import {styled, alpha} from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
-import InputBase from '@mui/material/InputBase';
 import Badge from '@mui/material/Badge';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
-import AccountCircle from '@mui/icons-material/AccountCircle';
 import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import GroupIcon from '@mui/icons-material/Group';
@@ -17,8 +14,8 @@ import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import LocalLibraryIcon from '@mui/icons-material/LocalLibrary';
 import {useNavigate} from "react-router-dom";
 import '../admin/userList/listUser.css'
-import CustomizedMenus from "./menuClick";
 import Link from '@mui/material/Link';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 
 const MenuAdmin = () => {
@@ -120,7 +117,7 @@ const MenuAdmin = () => {
                     aria-haspopup="true"
                     color="inherit"
                 >
-                    <AccountCircle/>
+                    <AccountCircleIcon/>
                 </IconButton>
                 <p>Профиль</p>
             </MenuItem>
@@ -155,7 +152,7 @@ const MenuAdmin = () => {
                                 onClick={handleProfileMenuOpen}
                                 color="inherit"
                             >
-                                <AccountCircle/>
+                                <AccountCircleIcon/>
                             </IconButton>
                         </div> : ''}
                     </Box>

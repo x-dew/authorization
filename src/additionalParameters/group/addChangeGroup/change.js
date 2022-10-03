@@ -10,7 +10,7 @@ import {FormGroup} from "@mui/material";
 import Joi from "joi";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 
-const Change = ({selectId, setOpen, setRestartList, restartList}) => {
+const Change = ({id,onChange,handleClose}) => {
 
     const [error, setError] = useState({})
     const [errorSipPort, setErrorSipPort] = useState('')
@@ -30,7 +30,7 @@ const Change = ({selectId, setOpen, setRestartList, restartList}) => {
             transport: null
         }
     })
-    const upDataGroup = () => {
+    const update = () => {
         const schema = Joi.object({
             username: Joi.string()
                 .required()
@@ -50,7 +50,7 @@ const Change = ({selectId, setOpen, setRestartList, restartList}) => {
         setError({})
         if (validate.error) {
             validate.error.details.forEach(v => {
-                console.log(v)
+                console.error(v)
                 setError(e => ({
                     ...e,
                     [v.context.key]: v.message
@@ -59,7 +59,7 @@ const Change = ({selectId, setOpen, setRestartList, restartList}) => {
         } else {
             const upData = {
                 name: state.name,
-                setting: {
+                settings: {
                     sip_port: state.settings.sip_port === '' ? null : !/[a-zA-Z]+/.test(state.settings.sip_port) ? Number(state.settings.sip_port) : state.settings.sip_port,
                     is_call: state.settings.is_call,
                     is_vcall: state.settings.is_vcall,
@@ -74,36 +74,36 @@ const Change = ({selectId, setOpen, setRestartList, restartList}) => {
                 },
                 token: localStorage.getItem('access_token'),
             }
-            axios.put(`http://localhost:8088/admin/groups/${selectId}`, upData)
+            axios.put(`http://localhost:8089/admin/groups/${id}`, upData)
                 .then((e) => {
-                    setOpen(false)
-                    setRestartList(restartList + 1)
+                    onChange('update')
+                    handleClose()
                 }).catch((error) => {
-                console.log(error)
+                console.error(error)
             })
         }
 
     }
 
-    const deleteGroup = () => {
-        axios.delete(`http://localhost:8088/admin/groups/${selectId}`, {
+    const destroy = () => {
+        axios.delete(`http://localhost:8089/admin/groups/${id}`, {
             data: {token: localStorage.getItem('access_token')}
         }).then((e) => {
-            setOpen(false)
-            setRestartList(restartList + 1)
+            onChange('destroy')
+            handleClose()
         })
             .catch((e) => {
-                console.log(e)
+                console.error(e)
             })
     }
 
     useEffect(() => {
-        axios.post(`http://localhost:8088/admin/groups/${selectId}`,
+        axios.post(`http://localhost:8089/admin/groups/${id}`,
             {token: localStorage.getItem('access_token')})
             .then((res) => {
                 setState(res.data)
             }).catch((error) => {
-            console.log(error)
+            console.error(error)
         })
     }, [])
     return (
@@ -113,7 +113,7 @@ const Change = ({selectId, setOpen, setRestartList, restartList}) => {
                 <HighlightOffIcon
                     fontSize={"large"}
                     style={{cursor: 'pointer'}}
-                    onClick={() => setOpen(false)}/>
+                    onClick={handleClose}/>
             </div>
             <Box
                 className='addGroupInput'
@@ -221,16 +221,12 @@ const Change = ({selectId, setOpen, setRestartList, restartList}) => {
             <Stack className='addDep' direction="row" spacing={2}>
                 <Button
                     style={{background: 'red'}}
-                    onClick={(e) => {
-                        deleteGroup()
-                    }}
+                    onClick={destroy}
                     variant="contained"
                     color="success">
                     Удалить
                 </Button>
-                <Button onClick={() => {
-                    upDataGroup()
-                }} variant="contained"
+                <Button onClick={update} variant="contained"
                         color="success">
                     Изменить
                 </Button>

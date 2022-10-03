@@ -23,7 +23,7 @@ const AuthorizationPage = () => {
     }
 
     const getAxios = () => {
-        axios.post(`http://localhost:8088/auth/signin`, {
+        axios.post(`http://localhost:8089/auth/signin`, {
             login: authorization.login,
             pwd: authorization.pwd,
         }).then((response) => {

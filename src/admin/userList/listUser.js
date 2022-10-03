@@ -12,8 +12,7 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import ModalUser from "../modalUser/modalUser";
 import {useNavigate} from "react-router-dom";
-import AdditionalParameters from "../../additionalParameters/additionalParameters";
-
+import Pagination from '@mui/material/Pagination';
 
 const ListUser = React.memo(() => {
     const [addUser, setAddUser] = useState('')
@@ -24,19 +23,36 @@ const ListUser = React.memo(() => {
 
     const [restartList, setRestartList] = useState(false)
     const [userChangeId, setUserChangeId] = useState('')
+    const [amountUser, setAmountUser] = useState(0)
+    const [pageUser, setPageUser] = useState(1)
+    const [limit, setLimit] = useState(3)
 
     const navigate = useNavigate();
+
     useEffect(() => {
-        axios.post(`http://localhost:8088/admin/users/list`, {
+        axios.post(`http://localhost:8089/admin/users/amount`, {
+                token: localStorage.getItem('access_token')
+            }
+        ).then((res) => {
+            setAmountUser(res.data.amount)
+        })
+            .catch((error) => {
+                console.log(error)
+            })
+        axios.post(`http://localhost:8089/admin/users/list`, {
             token: localStorage.getItem('access_token')
         }).then((res) => {
-            setUserBlock(res.data.users)
+            setUserBlock(res.data.users.reverse())
         }).catch((error) => {
             navigate("login")
             localStorage.setItem('access_token', '')
             console.log(error)
         })
     }, [restartList])
+
+    const lastPage = pageUser * limit
+    const firstPage = lastPage - limit
+    const userList = userBlock.slice(firstPage,lastPage)
 
     return (
         <div className='admin'>
@@ -64,8 +80,8 @@ const ListUser = React.memo(() => {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {userBlock.map((value, index) => (
-                                    <TableRow
+                                {userList.map((value, index) => {
+                                    return <TableRow
                                         style={{cursor: 'pointer'}}
                                         onClick={() => {
                                             setUserChangeId(value.id)
@@ -80,10 +96,19 @@ const ListUser = React.memo(() => {
                                         <TableCell>{value.name}</TableCell>
                                         <TableCell>{value.role.name}</TableCell>
                                     </TableRow>
-                                ))}
+                                })}
                             </TableBody>
                         </Table>
                     </TableContainer>
+                </div>
+                <div className='pagination_list'>
+                    <Stack spacing={2}>
+                        <Pagination
+                            onChange={(event, page) => {setPageUser(page)}}
+                            count={Math.ceil(amountUser / 3)}
+                            variant="outlined"
+                            color="primary"/>
+                    </Stack>
                 </div>
             </div>
             <ModalUser

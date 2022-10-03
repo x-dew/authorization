@@ -9,8 +9,14 @@ import {userReduce, users} from "./userAddReduce";
 import './userAdd.css'
 import axios from "axios";
 import Joi from "joi";
+import Stack from "@mui/material/Stack";
+import Button from "@mui/material/Button";
+import Avatar from '@mui/material/Avatar';
+import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
+import Image from "../image/image";
 
-const UserAdd = ({handleClose, setRestartList, restartList,addUser}) => {
+
+const UserAdd = ({handleClose, setRestartList, restartList, addUser}) => {
 
     const [user, dispatchUsers] = useReducer(userReduce, users)
 
@@ -45,6 +51,16 @@ const UserAdd = ({handleClose, setRestartList, restartList,addUser}) => {
         )
     }
 
+    const changeImage = (file) => {
+        dispatchUsers({
+                payload: {
+                    name: 'image',
+                    value: file
+                }
+            }
+        )
+    }
+
     const schema = Joi.object({
         login: Joi.string()
             .messages({
@@ -64,7 +80,6 @@ const UserAdd = ({handleClose, setRestartList, restartList,addUser}) => {
 
             }),
         password: Joi.string()
-            .alphanum()
             .messages({
                 'string.empty': "введите пароль",
                 'string.base': 'введите пароль',
@@ -121,8 +136,6 @@ const UserAdd = ({handleClose, setRestartList, restartList,addUser}) => {
                 number: user.numbers,
                 email: user.emails
             })
-
-        console.log(checkValidate)
         setCheckErrorValidate({})
         if (checkValidate.error) {
             checkValidate.error.details.forEach(event => {
@@ -137,14 +150,14 @@ const UserAdd = ({handleClose, setRestartList, restartList,addUser}) => {
                 "numbers": [user.numbers],
                 "emails": [user.emails],
             }
-            axios.post('http://localhost:8088/admin/users/create', request)
+            axios.post('http://localhost:8089/admin/users/create', request)
                 .then((resp) => {
                     handleClose()
                     setRestartList(restartList + 1)
                     console.log(resp)
                 }).catch((error) => {
-                setRestartList(restartList = 1)
                 console.log(error)
+                setRestartList(restartList = 1)
             })
         }
 
@@ -152,7 +165,7 @@ const UserAdd = ({handleClose, setRestartList, restartList,addUser}) => {
 
     useEffect(() => {
 
-        axios.post('http://localhost:8088/admin/groups/list', {
+        axios.post('http://localhost:8089/admin/groups/list', {
             token: localStorage.getItem('access_token'),
         }).then((groups) => {
             setGroupList(groups.data.groups)
@@ -160,7 +173,7 @@ const UserAdd = ({handleClose, setRestartList, restartList,addUser}) => {
             console.log(error)
         })
 
-        axios.post('http://localhost:8088/admin/departments/list', {
+        axios.post('http://localhost:8089/admin/departments/list', {
             token: localStorage.getItem('access_token')
         }).then((department) => {
             setDepartmentList(department.data.departments)
@@ -168,7 +181,7 @@ const UserAdd = ({handleClose, setRestartList, restartList,addUser}) => {
             console.log(error)
         })
 
-        axios.post('http://localhost:8088/admin/positions/list', {
+        axios.post('http://localhost:8089/admin/positions/list', {
             token: localStorage.getItem('access_token'),
         }).then((positions) => {
             setJobTitleList(positions.data.positions)
@@ -199,6 +212,19 @@ const UserAdd = ({handleClose, setRestartList, restartList,addUser}) => {
                             dispatchUsers({
                                 payload: {
                                     name: e.target.name,
+                                    value: 'admin'
+                                }
+                            })
+                            setButtonAction('admin')
+                        }}
+                        name='role'
+                        className={buttonAction === 'admin' ? 'buttonRole checkboxButtonAction' : 'buttonRole'}>Администратор
+                    </button>
+                    <button
+                        onClick={(e) => {
+                            dispatchUsers({
+                                payload: {
+                                    name: e.target.name,
                                     value: 'contact'
                                 }
                             })
@@ -217,7 +243,7 @@ const UserAdd = ({handleClose, setRestartList, restartList,addUser}) => {
                 noValidate
                 autoComplete="off"
             >
-                {buttonAction === 'user' ? <div className='inputUser'>
+                {buttonAction !== 'contact' ? <div className='inputUser'>
                     <TextField
                         onChange={changeObject}
                         name='login'
@@ -267,6 +293,15 @@ const UserAdd = ({handleClose, setRestartList, restartList,addUser}) => {
                     helperText={checkErrorValidate.email}
                     label="Email"
                     variant="outlined"/>
+                <TextField
+                    onChange={changeObject}
+                    name='sip_pwd'
+                    value={user.sip_pwd == null ? '' : user.sip_pwd}
+                    type='email'
+                    error={!!checkErrorValidate.sip_pwd}
+                    helperText={checkErrorValidate.sip_pwd}
+                    label="Sip Пароль"
+                    variant="outlined"/>
             </Box>
             <div className='userSelect'>
                 <FormControl variant="standard" sx={{m: 1, minWidth: 120}}>
@@ -274,7 +309,7 @@ const UserAdd = ({handleClose, setRestartList, restartList,addUser}) => {
                     <Select
                         labelId="demo-simple-select-standard-label"
                         id="demo-simple-select-standard"
-                        value={group == null ? '' :  group}
+                        value={group == null ? '' : group}
                         onChange={(e) => {
                             handleChangeGroup(e)
                             changeObject(e)
@@ -282,7 +317,7 @@ const UserAdd = ({handleClose, setRestartList, restartList,addUser}) => {
                         label="Age"
                         name='group_id'
                     >
-                        {
+                        {groupList === null ? <MenuItem>Нет данных</MenuItem> :
                             groupList.map((value, index) => {
                                 return <MenuItem key={index} value={value.id}>{value.name}</MenuItem>
                             })
@@ -303,7 +338,7 @@ const UserAdd = ({handleClose, setRestartList, restartList,addUser}) => {
                         name='department_id'
                         label="Age"
                     >
-                        {
+                        {departmentList === null ? <MenuItem>Нет данных</MenuItem> :
                             departmentList.map((value, index) => {
                                 return <MenuItem key={index} value={value.id}>{value.name}</MenuItem>
                             })
@@ -323,18 +358,22 @@ const UserAdd = ({handleClose, setRestartList, restartList,addUser}) => {
                         label="Age"
                         name='position_id'
                     >
-                        {
+                        {jobTitleList === null ? <MenuItem>Нет данных</MenuItem> :
                             jobTitleList.map((value, index) => {
                                 return <MenuItem key={index} value={value.id}>{value.name}</MenuItem>
                             })
                         }
                     </Select>
                 </FormControl>
+                <Image
+                    file={user.image}
+                    onChange={changeImage}
+                />
             </div>
             <div className='addButtonUser'>
                 <button onClick={handleClose} className='buttonRole'>Отмена</button>
                 <button
-                    style={{background: 'green', color: 'white'}}
+                    style={{background: '#1976d2', color: 'white'}}
                     className='buttonRole'
                     onClick={addUserAxios}
                 >Добавить

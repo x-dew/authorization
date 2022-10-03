@@ -8,7 +8,8 @@
 }
 
 .admin .css-ke5b6m-MuiButtonBase-root-MuiButton-root {
-    background-color: #1c8bd5 !important;
+    background-color:#dcdcdc !important;
+    color: #282c34!important;
 }
 
 .css-ancrnh-MuiButtonBase-root-MuiIconButton-root {
@@ -51,4 +52,9 @@
 .css-1c2i806-MuiFormLabel-root-MuiInputLabel-root {
     font-weight: 700 !important;
     color: #2e7d32 !important;
+}
+.pagination_list{
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
 }

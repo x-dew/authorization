@@ -1,0 +1,68 @@
+.imageButton{
+    width: 100%;
+    max-width: 160px;
+}
+
+.imageButton p {
+    margin-top: 5px;
+    font-size: 13px;
+    color: #919191;
+}
+
+.image {
+    display: flex;
+}
+
+.imgBlock {
+    margin-left: 20px;
+}
+
+.imgBlock svg path {
+    color: red !important;
+}
+
+.imgBlock_data {
+    display: flex;
+    align-items: center;
+}
+
+.inputBlockImg .css-1d3z3hw-MuiOutlinedInput-notchedOutline {
+    border: none !important;
+}
+
+.inputBlockImg input {
+    padding: 0 !important;
+}
+
+.fileInput {
+    position: relative;
+    width: 100%;
+    height: 30px;
+    background-color: #1976d2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+}
+
+.fileInput p {
+    color: white;
+    text-align: center;
+    vertical-align: center;
+    margin:0!important;
+    font-weight: 700;
+    letter-spacing: 0;
+}
+
+.inputBlockImg {
+    opacity: 0;
+    position: absolute;
+    width: 100%;
+    top: 0;
+    left: 0;
+    bottom: 0;
+}
+.imageError{
+    color: red!important;
+    font-weight: 700;
+}

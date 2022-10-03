@@ -19,10 +19,54 @@
     min-height: 100px!important;
     align-items: flex-start!important;
     padding-top:20px;
-    background-size: cover;
-    background-position-x: center;
-    background-position-y: center;
-    background-repeat: no-repeat;
-    background-image: url("../image/free-png.ru-174.png");
+}
+.addi-param_title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
+.addi-param_title h2 {
+    color: #2e7d32;
+}
+
+.addi-param_data {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+}
+
+.addi-param_data .css-quj9j6-MuiTable-root {
+    min-width: auto !important;
+}
+
+.inputFlex{
+    display: flex!important;
+    justify-content: space-between!important;
+}
+.MuiGrid-root  path{
+    color: red!important;
+}
+
+.modalAdd{
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+}
+.modalAddInput{
+    margin-top: 0!important;
+}
+.modalAddInput input{
+    height: 0.4375em!important;
+}
+.modalText{
+    margin-top: 0!important;
+    margin-bottom: 10px;
+}
+.css-hip9hq-MuiPaper-root-MuiAppBar-root{
+    background-color: #ffffff !important;
+    border-bottom: 1px solid #dcdcdc;
+}
+.css-hip9hq-MuiPaper-root-MuiAppBar-root{
+    box-shadow: none!important;
+}

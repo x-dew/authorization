@@ -8,6 +8,7 @@ import Select, {SelectChangeEvent} from '@mui/material/Select';
 import '../userAdd/userAdd.css'
 import axios from "axios";
 import Joi from "joi"
+import Image from "../image/image";
 
 
 const UserChange = React.memo(({handleClose, setRestartList, userChangeId, restartList}) => {
@@ -25,6 +26,9 @@ const UserChange = React.memo(({handleClose, setRestartList, userChangeId, resta
     const [user, setUser] = useState({})
     const styleText = (value, text) => value.name === text ? {color: 'red'} : {color: 'black'}
 
+    const changeImage = (file) => {
+        setUser(user => ({...user, image: file}))
+    }
 
     const handleChangeGroup = (event: SelectChangeEvent, name) => {
         setGroupId(event.target.value)
@@ -58,7 +62,6 @@ const UserChange = React.memo(({handleClose, setRestartList, userChangeId, resta
                 'string.max': 'длинна не должа превышать 10 символов',
             }),
         password: Joi.string()
-            .pattern(/^[a-zA-Z0-9]+$/)
             .min(8)
             .max(15)
             .empty('')
@@ -86,7 +89,7 @@ const UserChange = React.memo(({handleClose, setRestartList, userChangeId, resta
     })
 
     const changeUserData = (e) => {
-        const validate = user.role === 'user' ? schema.validate({
+        const validate = user.role !== 'contact' ? schema.validate({
             email: user.email,
             password: user.pwd,
             username: user.name,
@@ -111,20 +114,20 @@ const UserChange = React.memo(({handleClose, setRestartList, userChangeId, resta
             const dataUser = {
                 ...user,
                 "pwd": user.pwd || null,
-                "group_id": groupId === '' ? null : groupId === 1 ? null : groupId,
-                "position_id": positionId === '' ? null : positionId === 1 ? null : positionId,
-                "department_id": departmentId === '' ? null : departmentId === 1 ? null : departmentId,
+                "group_id": groupId === '' ? null : groupId === 'delete' ? null : groupId,
+                "position_id": positionId === '' ? null : positionId === 'delete' ? null : positionId,
+                "department_id": departmentId === '' ? null : departmentId === 'delete' ? null : departmentId,
                 "numbers": [user.number],
                 "emails": [user.email],
                 "token": localStorage.getItem('access_token'),
             }
-            axios.put(`http://localhost:8088/admin/users/${userChangeId}`, dataUser)
+            axios.put(`http://localhost:8089/admin/users/${userChangeId}`, dataUser)
                 .then((resp) => {
                     setRestartList(restartList + 1)
                     handleClose(e)
                 }).catch((error) => {
                 setRestartList(restartList = 1)
-                console.log(error)
+                console.error(error)
             })
         }
 
@@ -132,7 +135,7 @@ const UserChange = React.memo(({handleClose, setRestartList, userChangeId, resta
 
     const deleteUser = (e) => {
         handleClose(e)
-        axios.delete(`http://localhost:8088/admin/users/${userChangeId}`, {
+        axios.delete(`http://localhost:8089/admin/users/${userChangeId}`, {
             data: {
                 token: localStorage.getItem('access_token')
             }
@@ -140,12 +143,12 @@ const UserChange = React.memo(({handleClose, setRestartList, userChangeId, resta
             setRestartList(restartList + 1)
         })
             .catch((error) => {
-                console.log(error)
+                console.error(error)
             })
     }
 
     useEffect(() => {
-        axios.post(`http://localhost:8088/admin/users/${userChangeId}`, {
+        axios.post(`http://localhost:8089/admin/users/${userChangeId}`, {
             token: localStorage.getItem('access_token')
         }).then((res) => {
             setGroupId(res.data?.group?.id)
@@ -154,41 +157,39 @@ const UserChange = React.memo(({handleClose, setRestartList, userChangeId, resta
             setUser({
                 ...res.data,
                 role: res.data.role.name,
-                number: res.data.numbers.length > 0 ? res.data.numbers[0].number : "",
-                email: res.data.emails.length > 0 ? res.data.emails[0].email : "",
+                number: res.data.numbers && res.data.numbers.length > 0 ? res.data.numbers[0].number : "",
+                email: res.data.emails && res.data.emails.length > 0 ? res.data.emails[0].email : "",
             })
         })
             .catch((error) => {
-                console.log(error)
+                console.error(error)
             })
     }, [])
 
-
     useEffect(() => {
 
-        axios.post('http://localhost:8088/admin/groups/list', {token: localStorage.getItem('access_token'),})
+        axios.post('http://localhost:8089/admin/groups/list', {token: localStorage.getItem('access_token'),})
             .then((res) => {
-                res.data.groups.push({id: 1, name: 'Удалить Группу'})
+                res.data.groups && res.data.groups.push({id: 'delete', name: 'Удалить Группу'})
                 setGroups(res.data.groups)
             })
-            .catch(error => console.log(error))
+            .catch(error => console.error(error))
 
-        axios.post('http://localhost:8088/admin/departments/list', {token: localStorage.getItem('access_token'),})
+        axios.post('http://localhost:8089/admin/departments/list', {token: localStorage.getItem('access_token'),})
             .then((res) => {
-                res.data.departments.push(departmentId === '' ? {id: 1, name: 'Удалить Департамент'} : '')
+                res.data.departments && res.data.departments.push({id: 'delete', name: 'Удалить Департамент'})
                 setDepartments(res.data.departments)
             })
-            .catch(error => console.log(error))
+            .catch(error => console.error(error))
 
-        axios.post('http://localhost:8088/admin/positions/list', {token: localStorage.getItem('access_token'),})
+        axios.post('http://localhost:8089/admin/positions/list', {token: localStorage.getItem('access_token'),})
             .then((res) => {
-                res.data.positions.push({id: 1, name: 'Удалить Должность'})
+                res.data.positions && res.data.positions.push({id: 'delete', name: 'Удалить Должность'})
                 setPositions(res.data.positions)
             })
-            .catch(error => console.log(error))
+            .catch(error => console.error(error))
 
     }, [userChangeId])
-
 
     return (
         <div className='changeUserInput'>
@@ -202,6 +203,13 @@ const UserChange = React.memo(({handleClose, setRestartList, userChangeId, resta
                         name='role'
                         disabled={true}
                     >Пользователь
+                    </button>
+                    <button
+                        className={user.role === 'admin' ? 'buttonRole actionRole' : 'buttonRole'}
+                        style={{cursor: 'inherit'}}
+                        name='role'
+                        disabled={true}
+                    >Администратор
                     </button>
                     <button
                         className={user.role === 'contact' ? 'buttonRole actionRole' : 'buttonRole'}
@@ -221,7 +229,7 @@ const UserChange = React.memo(({handleClose, setRestartList, userChangeId, resta
                 autoComplete="off"
             >
                 {
-                    user.role === 'user' ? <div className='inputUser'>
+                    user.role !== 'contact' ? <div className='inputUser'>
                         <TextField
                             onChange={(e) => {
                                 setUser(user => ({...user, login: e.target.value}))
@@ -278,6 +286,17 @@ const UserChange = React.memo(({handleClose, setRestartList, userChangeId, resta
                     error={!!errorValidate.email}
                     helperText={errorValidate.email}
                     variant="outlined"/>
+                <TextField
+                    onChange={(e) => {
+                        setUser(user => ({...user, sip_pwd: e.target.value}))
+                    }}
+                    name='sip_pwd'
+                    value={user.sip_pwd == null ? '' : user.sip_pwd}
+                    type='text'
+                    error={!!errorValidate.sip_pwd}
+                    helperText={errorValidate.sip_pwd}
+                    label="Sip Пароль"
+                    variant="outlined"/>
             </Box>
             <div className='userSelect'>
                 <FormControl variant="standard" sx={{m: 1, minWidth: 120}}>
@@ -291,7 +310,7 @@ const UserChange = React.memo(({handleClose, setRestartList, userChangeId, resta
                         label="Name"
                         name='groups'
                     >
-                        {
+                        {groups === null ? <MenuItem>Нет данных</MenuItem> :
                             groups.map((value, index) => {
                                 return <MenuItem
                                     style={styleText(value, 'Удалить Группу')}
@@ -311,7 +330,7 @@ const UserChange = React.memo(({handleClose, setRestartList, userChangeId, resta
                         label="Name"
                         onChange={handleChangeDep}
                     >
-                        {
+                        {departments === null ? <MenuItem>Нет данных</MenuItem> :
                             departments.map((value, index) => {
                                 return <MenuItem
                                     style={styleText(value, 'Удалить Департамент')}
@@ -331,7 +350,7 @@ const UserChange = React.memo(({handleClose, setRestartList, userChangeId, resta
                         id="demo-multiple-name"
                         name='positions'
                     >
-                        {
+                        {positions === null ? <MenuItem>Нет данных</MenuItem> :
                             positions.map((value, index) => {
                                 return <MenuItem
                                     style={styleText(value, 'Удалить Должность')}
@@ -340,6 +359,10 @@ const UserChange = React.memo(({handleClose, setRestartList, userChangeId, resta
                         }
                     </Select>
                 </FormControl>
+                <Image
+                    file={user.image}
+                    onChange={changeImage}
+                />
             </div>
             <div className='addButtonUser'>
                 <button onClick={handleClose} className='buttonRole'>Отмена</button>

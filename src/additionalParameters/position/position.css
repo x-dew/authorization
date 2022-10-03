@@ -28,5 +28,23 @@
 }
 
 .position .css-ke5b6m-MuiButtonBase-root-MuiButton-root {
-    background-color: #1c8bd5 !important;
+    background-color:#dcdcdc !important;
+    color: #282c34!important;
+}
+.positionPagination{
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+.noData{
+    font-size: 24px;
+    color: darkgrey;
+}
+
+.position .css-11xur9t-MuiPaper-root-MuiTableContainer-root{
+    min-height: 480px!important;
+}
+
+.position .css-1ygcj2i-MuiTableCell-root{
+    width: 50% !important;
 }

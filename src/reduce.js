@@ -2,7 +2,7 @@ import React from "react";
 
 export const  signIn = {
     login:'admin',
-    pwd:'devdevdev'
+    pwd:'admin'
 }
 
 export const tokenAdmin = {

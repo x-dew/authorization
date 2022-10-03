@@ -22,49 +22,72 @@ import TextField from '@mui/material/TextField';
 import ModalDepartment from "./modalDepartment";
 import Joi from "joi";
 import {useNavigate} from "react-router-dom";
+import Pagination from "@mui/material/Pagination";
+import {usePagination} from "../../pagination/pagination" ;
+
 
 const Department = () => {
-
-    const [selectedId, setSelectedId] = useState('')
-    const [selectName, setSelectName] = useState('')
+    const [id, setId] = useState('')
     const [listDepartment, setListDeapartment] = useState([])
-    const [withdrawList, setWithdrawList] = useState('')
-    const [addDepartment, setAddDepartment] = useState('')
     const [open, setOpen] = useState(false);
-    const [restartList, setRestartList] = useState(0)
+    const pagination = usePagination()
     const navigate = useNavigate()
 
-    const handleOpen = () => setOpen(true);
+    const handleOpen = (id) => {
+        setId(id || null)
+        setOpen(true)
+    };
 
-    useEffect(() => {
-        const dispatchData = {
-            token: localStorage.getItem('access_token'),
-            limit: 0,
-            offset: 0
+    const onChange = (action) => {
+        switch (action) {
+            case 'close': {
+                setOpen(false);
+                setId(null)
+                break
+            }
+            case 'destroy':
+            case 'create': {
+                pagination.pageChange(null, 1);
+                break
+            }
+            case 'update': {
+                getDepartmentList()
+                break
+            }
         }
-        axios.post('http://localhost:8088/admin/departments/list', dispatchData)
-            .then((res) => {
-                setListDeapartment(res.data.departments)
+    }
+
+    const getDepartmentList = () => {
+        axios.post('http://localhost:8089/admin/departments/amount',
+            {token: localStorage.getItem('access_token')}).then((res) => {
+            pagination.amountChange(res.data.amount)
+            axios.post('http://localhost:8089/admin/departments/list', {
+                ...pagination,
+                token: localStorage.getItem('access_token'),
+            }).then((list) => {
+                setListDeapartment(list.data.departments || [])
             }).catch((error) => {
+                console.error(error)
+            })
+        }).catch((error) => {
             navigate("/")
-            console.log(error)
+            console.error(error)
         })
-    }, [restartList])
+    }
+
+    useEffect(getDepartmentList, [pagination.page])
+
     return (
         <div className='department'>
             <div className='userBlockHeader'>
                 <h2>Департаменты</h2>
                 <Stack direction="row" spacing={2}>
-                    <Button onClick={() => {
-                        setAddDepartment('add')
-                        handleOpen()
-                    }}
-                            variant="contained" color="success">
+                    <Button onClick={() => handleOpen()} variant="contained" color="success">
                         Добавить
                     </Button>
                 </Stack>
             </div>
-            <TableContainer component={Paper}>
+            {listDepartment !== null ? <TableContainer component={Paper}>
                 <Table sx={{minWidth: 650}} aria-label="simple table">
                     <TableHead>
                         <TableRow>
@@ -76,12 +99,7 @@ const Department = () => {
                         {listDepartment.map((value, index) => (
                             <TableRow
                                 style={{cursor: 'pointer'}}
-                                onClick={() => {
-                                    setAddDepartment('change')
-                                    setSelectedId(value.id)
-                                    setSelectName(value.name)
-                                    handleOpen()
-                                }}
+                                onClick={() => handleOpen(value.id)}
                                 key={index}
                                 sx={{'&:last-child td, &:last-child th': {border: 0}}}
                             >
@@ -91,17 +109,24 @@ const Department = () => {
                         ))}
                     </TableBody>
                 </Table>
-            </TableContainer>
-            <ModalDepartment
-                restartList={restartList}
-                setRestartList={setRestartList}
-                open={open}
-                setOpen={setOpen}
-                addDepartment={addDepartment}
-                selectName={selectName}
-                setSelectName={setSelectName}
-                selectedId={selectedId}
-            />
+            </TableContainer> : <p className='noData'>Нет данных</p>}
+            <div className='departmentPagination'>
+                <Stack spacing={2}>
+                    <Pagination
+                        page={pagination.page}
+                        onChange={pagination.pageChange}
+                        count={pagination.count}
+                    />
+                </Stack>
+            </div>
+            {open === true ?
+                <ModalDepartment
+                    open={open}
+                    id={id}
+                    onChange={onChange}
+                /> : ''
+            }
+
         </div>
     )
 }

@@ -10,7 +10,9 @@ export const users = {
     department_id: null,
     position_id: null,
     numbers: '',
-    emails: ''
+    emails: '',
+    sip_pwd:'',
+    image:''
 }
 
 export const userReduce = (state, action) => {

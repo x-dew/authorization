@@ -19,50 +19,80 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ModalPosition from "./modalPosition";
 import Joi from "joi";
 import {useNavigate} from "react-router-dom";
+import Pagination from "@mui/material/Pagination";
+import {usePagination} from "../../pagination/pagination";
+import ModalDepartment from "../department/modalDepartment";
+
 
 const Position = () => {
-    const [selectedId, setSelectedId] = useState('')
-    const [selectName, setSelectName] = useState('')
+    const [id, setId] = useState('')
     const [listPosition, setListPosition] = useState([])
-    const [withdrawList, setWithdrawList] = useState('')
-    const [addPosition, setAddPosition] = useState('')
     const [open, setOpen] = useState(false);
-    const [restartList, setRestartList] = useState(0)
+    const pagination = usePagination()
     const navigate = useNavigate()
 
 
-    const handleOpen = () => setOpen(true);
-    useEffect(() => {
-        const dispatchData = {
-            token: localStorage.getItem('access_token'),
-            limit: 0,
-            offset: 0
+    const handleOpen = (id) => {
+        setId(id || null)
+        setOpen(true)
+    };
+    const onChange = (action) => {
+        switch (action) {
+            case 'close': {
+                setOpen(false);
+                setId(null)
+                break
+            }
+            case 'destroy': {
+                pagination.pageChange(null, 1)
+                break
+            }
+            case 'create': {
+                pagination.pageChange(null, 1)
+                break
+            }
+                ;
+            case 'update': {
+                getPositionList()
+                break
+            }
         }
-        axios.post('http://localhost:8088/admin/positions/list', dispatchData)
+    }
+
+    const getPositionList = () => {
+        axios.post('http://localhost:8089/admin/positions/amount', {token: localStorage.getItem('access_token'),})
             .then((res) => {
-                setListPosition(res.data.positions)
+                pagination.amountChange(res.data.amount)
+                axios.post('http://localhost:8089/admin/positions/list', {
+                    ...pagination,
+                    token: localStorage.getItem('access_token'),
+                })
+                    .then((list) => {
+                        setListPosition(list.data.positions || [])
+                    }).catch((error) => {
+                    navigate("/login")
+                    console.error(error)
+                })
             }).catch((error) => {
             navigate("/login")
-            console.log(error)
+            console.error(error)
         })
-    }, [restartList])
+    }
 
+    useEffect(getPositionList, [pagination.page])
 
     return (
         <div className='position'>
             <div className='userBlockHeader'>
                 <h2>Должности</h2>
                 <Stack direction="row" spacing={2}>
-                    <Button onClick={() => {
-                        setAddPosition('add')
-                        handleOpen()
-                    }}
+                    <Button onClick={() => handleOpen()}
                             variant="contained" color="success">
                         Добавить
                     </Button>
                 </Stack>
             </div>
-            <TableContainer component={Paper}>
+            {listPosition !== null ? <TableContainer component={Paper}>
                 <Table sx={{minWidth: 650}} aria-label="simple table">
                     <TableHead>
                         <TableRow>
@@ -74,12 +104,7 @@ const Position = () => {
                         {listPosition.map((value, index) => (
                             <TableRow
                                 style={{cursor: 'pointer'}}
-                                onClick={() => {
-                                    setAddPosition('change')
-                                    setSelectedId(value.id)
-                                    setSelectName(value.name)
-                                    handleOpen()
-                                }}
+                                onClick={() => handleOpen(value.id)}
                                 key={index}
                                 sx={{'&:last-child td, &:last-child th': {border: 0}}}
                             >
@@ -89,17 +114,23 @@ const Position = () => {
                         ))}
                     </TableBody>
                 </Table>
-            </TableContainer>
-            <ModalPosition
-                restartList={restartList}
-                setRestartList={setRestartList}
-                open={open}
-                setOpen={setOpen}
-                addPosition={addPosition}
-                selectName={selectName}
-                setSelectName={setSelectName}
-                selectedId={selectedId}
-            />
+            </TableContainer> : <p className='noData'>Нет данных</p>}
+            <div className='positionPagination'>
+                <Stack spacing={2}>
+                    <Pagination
+                        page={pagination.page}
+                        onChange={pagination.pageChange}
+                        count={pagination.count}
+                    />
+                </Stack>
+            </div>
+            {open === true ?
+                <ModalPosition
+                    open={open}
+                    id={id}
+                    onChange={onChange}
+                /> : ''
+            }
         </div>
     )
 }

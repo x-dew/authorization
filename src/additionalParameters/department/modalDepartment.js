@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
@@ -23,23 +23,34 @@ const style = {
     p: 4,
 };
 
-const ModalDepartment = ({
-                             selectName,
-                             setSelectName,
-                             addDepartment,
-                             selectedId,
-                             restartList,
-                             setRestartList,
-                             open,
-                             setOpen
-                         }) => {
-    const [newDepartment, setNewDepartment] = useState('')
+const ModalDepartment = ({id, open, onChange}) => {
     const [errorValidate, setErrorValidate] = useState({})
 
-    const handleClose = () => setOpen(false);
+    const [department, setDepartment] = useState({
+        id: null,
+        name: ''
+    })
+
+    const handleClose = () => {
+        setDepartment({...department, id: null, name: ''})
+        onChange('close');
+    }
+
+    useEffect(() => {
+        axios.post(`http://localhost:8089/admin/departments/${id}`, {
+            token: localStorage.getItem('access_token'),
+        })
+            .then((res) => {
+                setDepartment({...department, id: res.data.id, name: res.data.name})
+            })
+            .catch((error) => {
+                console.error(error)
+            })
+    }, [])
+
     const create = () => {
         const schema = Joi.object({
-            username: Joi.string()
+            name: Joi.string()
                 .required()
                 .pattern(/^[a-zA-Zа-яА-Я]+$/)
                 .min(3)
@@ -51,12 +62,12 @@ const ModalDepartment = ({
                 }),
         })
         const validate = schema.validate({
-            username: newDepartment
+            name: department.name
         })
         setErrorValidate({})
         if (validate.error) {
             validate.error.details.forEach(v => {
-                console.log(v)
+                console.error(v)
                 setErrorValidate(e => ({
                     ...e,
                     [v.context.key]: v.message
@@ -65,24 +76,24 @@ const ModalDepartment = ({
         } else {
             const dispatchData = {
                 token: localStorage.getItem('access_token'),
-                name: newDepartment,
+                name: department.name,
             }
-            axios.post('http://localhost:8088/admin/departments/create', dispatchData)
+            axios.post('http://localhost:8089/admin/departments/create', dispatchData)
                 .then((res) => {
-                    setNewDepartment('')
-                    setRestartList(restartList +1)
-                    setOpen(false)
+                    onChange('create')
+                    handleClose()
                 })
                 .catch((error) => {
-                    console.log(error)
+                    console.error(error)
                 })
         }
 
     }
 
-    const upData = () => {
+
+    const update = () => {
         const schema = Joi.object({
-            username: Joi.string()
+            name: Joi.string()
                 .required()
                 .pattern(/^[a-zA-Zа-яА-Я]+$/)
                 .min(3)
@@ -94,7 +105,7 @@ const ModalDepartment = ({
                 }),
         })
         const validate = schema.validate({
-            username: selectName
+            name: department.name
         })
         setErrorValidate({})
         if (validate.error) {
@@ -108,39 +119,40 @@ const ModalDepartment = ({
         } else {
             const dispatchData = {
                 token: localStorage.getItem('access_token'),
-                name: selectName,
+                name: department.name,
             }
-            axios.put(`http://localhost:8088/admin/departments/${selectedId}`, dispatchData)
+            axios.put(`http://localhost:8089/admin/departments/${department.id}`, dispatchData)
                 .then((res) => {
-                    setRestartList(restartList +1)
-                    setOpen(false)
+                    onChange('update')
+                    handleClose()
                 })
                 .catch((error) => {
-                    console.log(error)
+                    console.error(error)
                 })
         }
 
     }
 
-    const deleteDepartment = () => {
-        axios.delete(`http://localhost:8088/admin/departments/${selectedId}`, {
+    const destroy = () => {
+        axios.delete(`http://localhost:8089/admin/departments/${id}`, {
             data: {token: localStorage.getItem('access_token')}
         },)
             .then((res) => {
-                setOpen(false)
-                setRestartList(restartList +1)
+                onChange('destroy')
+                handleClose()
             })
             .catch((error) => {
-                console.log(error)
+                console.error(error)
             })
     }
+
     return (
         <div className='departmentModal'>
             <Modal
                 open={open}
                 onClose={handleClose}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
+                aria-labelledby="modal-title"
+                aria-describedby="modal-description"
                 closeAfterTransition
                 BackdropComponent={Backdrop}
                 BackdropProps={{
@@ -148,83 +160,52 @@ const ModalDepartment = ({
                 }}
             >
                 <Box sx={style}>
-                    {addDepartment === 'add' ?
-                        <div>
-                            <Typography
-                                id="modal-modal-title"
-                                variant="h6"
-                                component="h2"
-                                className='inputFlex'
-                            >
-                                <p className='modalText'>Департамент</p>
-                                <ClearIcon style={{cursor: 'pointer'}} onClick={() => handleClose()}/>
-                            </Typography>
-                            <div className='modalAdd'>
-                                <TextField
-                                    error={!!errorValidate.username}
-                                    helperText={errorValidate.username}
-                                    className='modalAddInput'
-                                    onChange={(e) => setNewDepartment(e.target.value)}
-                                    id="modal-modal-description"
-                                    sx={{mt: 2}}>
-                                </TextField>
-                                <Stack className='addDep' direction="row" spacing={2}>
-                                    <Button onClick={() => {
-                                        create()
-                                    }}
-                                            variant="contained"
-                                            color="success"
-                                            disabled={!newDepartment}>
-                                        Добавить
-                                    </Button>
-                                </Stack>
-                            </div>
-                        </div> : <div>
-                            <Typography
-                                id="modal-modal-title"
-                                variant="h6"
-                                component="p"
-                                className='inputFlex'>
-                                <span className='modalText'>Редактирование Департаментов</span>
-                                <ClearIcon
-                                    style={{cursor: 'pointer'}}
-                                    onClick={() => handleClose()}
-                                />
-                            </Typography>
-                            <div className='modalAdd'>
-                                <TextField
-                                    error={!!errorValidate.username}
-                                    helperText={errorValidate.username}
-                                    className='modalAddInput'
-                                    onChange={(e) => setSelectName(e.target.value)}
-                                    id="modal-modal-description"
-                                    value={selectName}
-                                    sx={{mt: 2}}>
-                                </TextField>
-                                <Stack className='addDep' direction="row" spacing={2}>
-                                    <Button onClick={() => {
-                                        if (selectName !== '') {
-                                            upData()
-                                        }
-                                    }}
-                                            variant="contained"
-                                            color="success"
-                                            disabled={!selectName}
+                    <Typography
+                        id="modal-title"
+                        variant="h6"
+                        component="h2"
+                        className='inputFlex'
+                    >
+                        <p className='modalText'>{department.id === null ? 'Создание' : 'Редактирование'} департамента</p>
+                        <ClearIcon style={{cursor: 'pointer'}} onClick={() => handleClose()}/>
+                    </Typography>
+                    <div className='modalAdd'>
+                        <TextField
+                            error={!!errorValidate.name}
+                            helperText={errorValidate.name}
+                            value={department.name}
+                            className='modalAddInput'
+                            onChange={e => setDepartment({...department, name: e.target.value})}
+                            id="modal-description"
+                            sx={{mt: 2}}>
+                        </TextField>
+                        <Stack className='addDep' direction="row" spacing={2}>
+                            {department.id ?
+                                <>
+                                    <Button
+                                        onClick={update}
+                                        variant="contained"
+                                        color="success"
                                     >
-                                        Изменить
+                                        Сохранить
                                     </Button>
                                     <Button
-                                        onClick={() => deleteDepartment()}
+                                        onClick={destroy}
                                         variant="contained"
                                         style={{background: 'red', color: 'white'}}
-                                        disabled={!selectName}
                                     >
                                         Удалить
                                     </Button>
-                                </Stack>
-                            </div>
-                        </div>
-                    }
+                                </> :
+                                <Button onClick={create}
+                                        variant="contained"
+                                        color="success"
+                                >
+                                    Добавить
+                                </Button>
+                            }
+                        </Stack>
+                    </div>
                 </Box>
             </Modal>
         </div>

@@ -16,8 +16,12 @@ const style = {
     boxShadow: 24,
     p: 4,
 };
-const ModalGroup = ({open, setOpen, selectId, buttonClick, setRestartList,restartList}) => {
-    const handleClose = () => setOpen(false);
+const ModalGroup = ({id, open, onChange}) => {
+
+    const handleClose = () => {
+        onChange('close');
+    };
+
     return (
         <div className='modalParameters'>
             <Modal
@@ -31,18 +35,15 @@ const ModalGroup = ({open, setOpen, selectId, buttonClick, setRestartList,restar
                     timeout: 500
                 }}
             >
-                <Box sx={style}>{buttonClick === 'add' ?
+                <Box sx={style}>{id === null ?
                     <Add
-                        restartList={restartList}
-                        setOpen={setOpen}
-                        setRestartList={setRestartList}
+                        onChange={onChange}
                         handleClose={handleClose}/> :
                     <Change
-                        restartList={restartList}
-                        setOpen={setOpen}
-                        setRestartList={setRestartList}
+                        id={id}
+                        onChange={onChange}
                         handleClose={handleClose}
-                        selectId={selectId}/>}
+                        />}
                 </Box>
             </Modal>
         </div>

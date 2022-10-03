@@ -9,7 +9,9 @@ import Stack from "@mui/material/Stack";
 import ClearIcon from '@mui/icons-material/Clear';
 import Joi from "joi";
 import axios from "axios";
-import {useState} from "react";
+import {useState,useEffect} from "react";
+import '../../header/header.css'
+
 
 const style = {
     position: 'absolute',
@@ -23,21 +25,33 @@ const style = {
     p: 4,
 };
 
-const ModalPosition = ({
-                           selectName,
-                           setSelectName,
-                           open,
-                           restartList,
-                           setRestartList,
-                           setOpen,
-                           addPosition,
-                           selectedId
-                       }) => {
+const ModalPosition = ({id, open, onChange}) => {
 
     const [errorValidate, setErrorValidate] = useState({})
-    const [newPosition, setNewPosition] = useState('')
 
-    const handleClose = () => setOpen(false);
+    const [position, setPosition] = useState({
+        id: null,
+        name: ''
+    })
+
+    const handleClose = () => {
+        setPosition({...position, id: null, name: ''})
+        onChange('close')
+    };
+    console.log(id)
+    useEffect(() => {
+        axios.post(`http://localhost:8089/admin/positions/${id}`, {
+            token: localStorage.getItem('access_token'),
+        })
+            .then((res) => {
+                setPosition({...position, id: res.data.id, name: res.data.name})
+                console.log(res)
+            })
+            .catch((error) => {
+                console.error(error)
+            })
+    }, [])
+
     const create = () => {
         const schema = Joi.object({
             username: Joi.string()
@@ -52,12 +66,12 @@ const ModalPosition = ({
                 }),
         })
         const validate = schema.validate({
-            username: newPosition
+            username: position.name
         })
         setErrorValidate({})
         if (validate.error) {
             validate.error.details.forEach(v => {
-                console.log(v)
+                console.error(v)
                 setErrorValidate(e => ({
                     ...e,
                     [v.context.key]: v.message
@@ -66,22 +80,21 @@ const ModalPosition = ({
         } else {
             const dispatchData = {
                 token: localStorage.getItem('access_token'),
-                name: newPosition,
+                name: position.name,
             }
-            axios.post('http://localhost:8088/admin/positions/create', dispatchData)
+            axios.post('http://localhost:8089/admin/positions/create', dispatchData)
                 .then((res) => {
-                    setNewPosition('')
-                    setRestartList(restartList +1)
-                    setOpen(false)
+                    onChange('create')
+                    handleClose()
                 })
                 .catch((error) => {
-                    console.log(error)
+                    console.error(error)
                 })
         }
 
     }
 
-    const upData = () => {
+    const update = () => {
         const schema = Joi.object({
             username: Joi.string()
                 .required()
@@ -95,12 +108,12 @@ const ModalPosition = ({
                 }),
         })
         const validate = schema.validate({
-            username: selectName
+            username: position.name
         })
         setErrorValidate({})
         if (validate.error) {
             validate.error.details.forEach(v => {
-                console.log(v)
+                console.error(v)
                 setErrorValidate(e => ({
                     ...e,
                     [v.context.key]: v.message
@@ -109,30 +122,30 @@ const ModalPosition = ({
         } else {
             const dispatchData = {
                 token: localStorage.getItem('access_token'),
-                name: selectName,
+                name: position.name,
             }
-            axios.put(`http://localhost:8088/admin/positions/${selectedId}`, dispatchData)
+            axios.put(`http://localhost:8089/admin/positions/${id}`, dispatchData)
                 .then((res) => {
-                    setRestartList(restartList +1)
-                    setOpen(false)
+                    onChange('update')
+                    handleClose()
                 })
                 .catch((error) => {
-                    console.log(error)
+                    console.error(error)
                 })
         }
 
     }
 
-    const deletePosition = () => {
-        axios.delete(`http://localhost:8088/admin/positions/${selectedId}`, {
+    const destroy = () => {
+        axios.delete(`http://localhost:8089/admin/positions/${id}`, {
             data: {token: localStorage.getItem('access_token')}
         },)
             .then((res) => {
-                setOpen(false)
-                setRestartList(restartList +1)
+                onChange('destroy')
+                handleClose()
             })
             .catch((error) => {
-                console.log(error)
+                console.error(error)
             })
     }
 
@@ -150,83 +163,53 @@ const ModalPosition = ({
                 }}
             >
                 <Box sx={style}>
-                    {addPosition === 'add' ?
-                        <div>
-                            <Typography
-                                id="modal-modal-title"
-                                variant="h6"
-                                component="h2"
-                                className='inputFlex'
-                            >
-                                <p className='modalText'>Должность</p>
-                                <ClearIcon style={{cursor: 'pointer'}} onClick={() => handleClose()}/>
-                            </Typography>
-                            <div className='modalAdd'>
-                                <TextField
-                                    error={!!errorValidate.username}
-                                    helperText={errorValidate.username}
-                                    className='modalAddInput'
-                                    onChange={(e) => setNewPosition(e.target.value)}
-                                    id="modal-modal-description"
-                                    sx={{mt: 2}}>
-                                </TextField>
-                                <Stack className='addDep' direction="row" spacing={2}>
-                                    <Button onClick={() => {
-                                        create()
-                                    }}
-                                            variant="contained"
-                                            color="success"
-                                            disabled={!newPosition}>
-                                        Добавить
-                                    </Button>
-                                </Stack>
-                            </div>
-                        </div> : <div>
-                            <Typography
-                                id="modal-modal-title"
-                                variant="h6"
-                                component="p"
-                                className='inputFlex'>
-                                <span className='modalText'>Редактирование Должностей</span>
-                                <ClearIcon
-                                    style={{cursor: 'pointer'}}
-                                    onClick={() => handleClose()}
-                                />
-                            </Typography>
-                            <div className='modalAdd'>
-                                <TextField
-                                    error={!!errorValidate.username}
-                                    helperText={errorValidate.username}
-                                    className='modalAddInput'
-                                    onChange={(e) => setSelectName(e.target.value)}
-                                    id="modal-modal-description"
-                                    value={selectName}
-                                    sx={{mt: 2}}>
-                                </TextField>
-                                <Stack className='changePos' direction="row" spacing={2}>
-                                    <Button onClick={() => {
-                                        if (selectName !== '') {
-                                            upData()
-                                        }
-                                    }}
-                                            variant="contained"
-                                            color="success"
-                                            disabled={!selectName}
+
+                    <Typography
+                        id="modal-modal-title"
+                        variant="h6"
+                        component="h2"
+                        className='inputFlex'
+                    >
+                        <p className='modalText'>{position.id === null ? 'Создание' : 'Редактирование'} Должности</p>
+                        <ClearIcon style={{cursor: 'pointer'}} onClick={() => handleClose()}/>
+                    </Typography>
+                    <div className='modalAdd'>
+                        <TextField
+                            error={!!errorValidate.username}
+                            helperText={errorValidate.username}
+                            value={position.name}
+                            className='modalAddInput'
+                            onChange={(e) => setPosition({...position, name: e.target.value})}
+                            id="modal-modal-description"
+                            sx={{mt: 2}}>
+                        </TextField>
+                        <Stack className='addDep' direction="row" spacing={2}>
+                            {position.id ?
+                                <>
+                                    <Button
+                                        onClick={update}
+                                        variant="contained"
+                                        color="success"
                                     >
-                                        Изменить
+                                        Сохранить
                                     </Button>
                                     <Button
-                                        onClick={() => deletePosition()}
+                                        onClick={destroy}
                                         variant="contained"
                                         style={{background: 'red', color: 'white'}}
-                                        disabled={!selectName}
                                     >
                                         Удалить
                                     </Button>
-                                </Stack>
-                            </div>
-                        </div>
-                    }
+                                </> :
+                                <Button onClick={create}
+                                        variant="contained"
+                                        color="success"
+                                >
+                                    Добавить
+                                </Button>
+                            }
+                        </Stack>
+                    </div>
                 </Box>
             </Modal>
         </div>
