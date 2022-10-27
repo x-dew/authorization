@@ -1,0 +1,28 @@
+.addPos {
+    margin-bottom: 15px;
+    display: flex;
+    margin-left: 20px;
+}
+
+.inputFlex{
+    display: flex!important;
+    justify-content: space-between!important;
+}
+.modalText{
+    margin-top: 0!important;
+    margin-bottom: 10px;
+}
+.modalAdd{
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    height: 40px;
+}
+
+.modalAdd .css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input {
+    padding: 7px 5px!important;
+}
+
+.modalAddInput{
+    margin-top: 0!important;
+}

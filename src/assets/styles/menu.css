@@ -1,0 +1,78 @@
+.additionalMenu {
+    display: flex;
+    align-items: center;
+    margin-right: 30px !important;
+    color: black !important;
+}
+
+.additionalMenu p {
+    margin-right: 10px;
+}
+
+.linkAdditional {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.menuHeader {
+    justify-content: space-between !important;
+    width: 100% !important;
+}
+.linkAdditional button svg path{
+    color: #282c34!important;
+}
+.css-1ps4owl-MuiTypography-root-MuiLink-root{
+    text-decoration: none!important;
+}
+.css-1ps4owl-MuiTypography-root-MuiLink-root:hover{
+    color: #2e7d32!important;
+}
+.css-hyum1k-MuiToolbar-root{
+    display: flex;
+    justify-content: space-between;
+    min-height: 100px!important;
+    align-items: flex-start!important;
+    padding-top:20px;
+}
+.addi-param_title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.addi-param_title h2 {
+    color: #2e7d32;
+}
+
+.addi-param_data {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+}
+
+.addi-param_data .css-quj9j6-MuiTable-root {
+    min-width: auto !important;
+}
+
+.inputFlex{
+    display: flex!important;
+    justify-content: space-between!important;
+}
+.MuiGrid-root  path{
+    color: red!important;
+}
+
+.css-hip9hq-MuiPaper-root-MuiAppBar-root{
+    background-color: #ffffff !important;
+    border-bottom: 1px solid #dcdcdc;
+}
+.css-hip9hq-MuiPaper-root-MuiAppBar-root{
+    box-shadow: none!important;
+}
+@media (min-width: 0px) {
+
+    .css-1guk29 {
+        display: block!important;
+    }
+}

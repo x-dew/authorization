@@ -5,10 +5,6 @@ export const  signIn = {
     pwd:'admin'
 }
 
-export const tokenAdmin = {
-    token:'',
-}
-
 export const reduce = (state, action) => {
     return {
         ...state,
