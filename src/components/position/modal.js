@@ -9,7 +9,7 @@ import Stack from "@mui/material/Stack";
 import ClearIcon from '@mui/icons-material/Clear';
 import Joi from "joi";
 import axios from "axios";
-import {useState,useEffect} from "react";
+import {useState, useEffect} from "react";
 import '../../assets/styles/modalPosition.css'
 import api from '../../api'
 
@@ -41,10 +41,10 @@ const ModalPosition = ({id, open, onChange}) => {
     };
 
     useEffect(() => {
-      api.position.view(id).then((res) => {
-                setPosition({...position, id: res.data.id, name: res.data.name})
-                console.log(res)
-            })
+        api.position.view(id).then((res) => {
+            setPosition({...position, id: res.data.id, name: res.data.name})
+            console.log(res)
+        })
             .catch((error) => {
                 console.error(error)
             })
@@ -76,10 +76,10 @@ const ModalPosition = ({id, open, onChange}) => {
                 }))
             })
         } else {
-                api.position.create(position.name).then((res) => {
-                    onChange('create')
-                    handleClose()
-                })
+            api.position.create({name: position.name}).then((res) => {
+                onChange('create')
+                handleClose()
+            })
                 .catch((error) => {
                     console.error(error)
                 })
@@ -113,10 +113,10 @@ const ModalPosition = ({id, open, onChange}) => {
                 }))
             })
         } else {
-                api.position.update(position.name,id).then((res) => {
-                    onChange('update')
-                    handleClose()
-                })
+            api.position.update({name: position.name}, id).then((res) => {
+                onChange('update')
+                handleClose()
+            })
                 .catch((error) => {
                     console.error(error)
                 })
@@ -125,10 +125,10 @@ const ModalPosition = ({id, open, onChange}) => {
     }
 
     const destroy = () => {
-            api.position.destroy(id).then((res) => {
-                onChange('destroy')
-                handleClose()
-            })
+        api.position.destroy(id).then((res) => {
+            onChange('destroy')
+            handleClose()
+        })
             .catch((error) => {
                 console.error(error)
             })

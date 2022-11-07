@@ -111,7 +111,7 @@ const ModalDepartmetn = ({id, open, onChange}) => {
                 }))
             })
         } else {
-                api.department.update(department.name,department.id).then((res) => {
+                api.department.update({name:department.name},id).then((res) => {
                     onChange('update')
                     handleClose()
                 })

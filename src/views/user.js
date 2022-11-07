@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from "react";
 import '../assets/styles/listUser.css'
-import axios from "axios";
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -13,46 +12,38 @@ import Button from '@mui/material/Button';
 import ModalUser from "../components/user/modalUser/modalUser";
 import {useNavigate} from "react-router-dom";
 import Pagination from '@mui/material/Pagination';
-import {usePagination} from "../components/layout/pagination";
-import api from "../api";
+import {usePagination} from "../utils/pagination";
 import {useSelector} from "react-redux";
+import api from "../api";
 
-const User = React.memo(() => {
-
-    const [userBlock, setUserBlock] = useState([])
+const User = () => {
+    const [user, setUser] = useState([])
     const [open, setOpen] = useState(false);
-    const token = useSelector((state) => state.counter)
-    const user = useSelector((state) => state.user)
-    console.log(user)
-    console.log(token)
+    const [id, setId] = useState('')
+    const [error, setError] = useState('')
+    const pagination = usePagination()
+    const navigate = useNavigate()
 
     const handleOpen = (id) => {
         setOpen(true)
         setId(id || null)
     };
 
-    const [id, setId] = useState('')
-
-    const pagination = usePagination()
-    const navigate = useNavigate();
-
     const getListUser = () => {
         api.user.amount().then((res) => {
             pagination.amountChange(res.data.amount)
+            api.user.list(pagination).then((res) => {
+                setUser(res.data.users)
+            }).catch((error) => {
+                console.error(error)
+            })
         }).catch((error) => {
-            console.log(error)
-        })
-
-        api.user.list(pagination).then((res) => {
-            setUserBlock(res.data.users)
-        }).catch((error) => {
-            navigate("login")
-            localStorage.setItem('token', '')
-            console.log(error)
+            console.error(error)
+            navigate("/login")
         })
     }
-
     useEffect(getListUser, [pagination.page])
+
 
     const onChange = (action) => {
         switch (action) {
@@ -89,37 +80,37 @@ const User = React.memo(() => {
                         </Button>
                     </Stack>
                 </div>
-                <div className='userTable'>
-                    <TableContainer component={Paper}>
-                        <Table sx={{minWidth: 650}} aria-label="simple table">
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell>Id</TableCell>
-                                    <TableCell>Логин</TableCell>
-                                    <TableCell>Имя</TableCell>
-                                    <TableCell>Роль</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {userBlock.map((value, index) => {
-                                    return <TableRow
-                                        style={{cursor: 'pointer'}}
-                                        onClick={() => {
-                                            handleOpen(value.id)
-                                        }}
-                                        key={index}
-                                        sx={{'&:last-child td, &:last-child th': {border: 0}}}
-                                    >
-                                        <TableCell>{value.id}</TableCell>
-                                        <TableCell>{value.login}</TableCell>
-                                        <TableCell>{value.name}</TableCell>
-                                        <TableCell>{value.role.name}</TableCell>
+                {error === 'error' ? <h2 className='error'>Ошибка при получение списка</h2> :
+                    <div className='userTable'>
+                        <TableContainer component={Paper}>
+                            <Table sx={{minWidth: 650}} aria-label="simple table">
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell>Id</TableCell>
+                                        <TableCell>Логин</TableCell>
+                                        <TableCell>Имя</TableCell>
+                                        <TableCell>Роль</TableCell>
                                     </TableRow>
-                                })}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                </div>
+                                </TableHead>
+                                <TableBody>
+                                    {user.map((value, index) => {
+                                        return <TableRow
+                                            style={{cursor: 'pointer'}}
+                                            onClick={() => handleOpen(value.id)}
+                                            key={index}
+                                            sx={{}}
+                                        >
+                                            <TableCell>{value.id}</TableCell>
+                                            <TableCell>{value.login}</TableCell>
+                                            <TableCell>{value.name}</TableCell>
+                                            <TableCell>{value.role.name}</TableCell>
+                                        </TableRow>
+                                    })}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    </div>}
+
                 <div className='pagination_list'>
                     <Stack spacing={2}>
                         <Pagination
@@ -138,6 +129,6 @@ const User = React.memo(() => {
             />
         </div>
     )
-})
+}
 
 export default User

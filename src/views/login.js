@@ -6,9 +6,10 @@ import TextField from '@mui/material/TextField';
 import {useNavigate} from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
 import api from '../api'
-import {useSelector, useDispatch} from 'react-redux'
-import {setToken} from '../store/user'
-import {setLogin} from "../store/login";
+import {useDispatch} from 'react-redux'
+import {setAuth} from '../store/auth'
+import {setLogin} from "../store/user"
+
 
 const Login = () => {
     const dispatch = useDispatch()
@@ -31,18 +32,11 @@ const Login = () => {
             pwd: authorization.pwd,
         }
         api.login.signin(data).then((response) => {
-            dispatch(setToken(response.data.auth))
-            dispatch(setLogin(response.data.user))
-                localStorage.setItem('token', response.data.auth.token)
-                localStorage.setItem('refresh_token_expired', response.data.auth.refresh_token_expired)
-                localStorage.setItem('refresh_token', response.data.auth.refresh_token)
+                dispatch(setAuth(response.data.auth))
+                dispatch(setLogin(response.data.user))
                 setErrorAxios('')
-            console.log(response)
-                setTimeout(() => {
-                    navigate("/");
-                    setAdminPage('1')
-                }, 2000)
-
+                navigate("/");
+                setAdminPage('1')
             }
         ).catch((error) => {
             console.log(error);

@@ -20,9 +20,10 @@ import ModalPosition from "../components/position/modal";
 import Joi from "joi";
 import {useNavigate} from "react-router-dom";
 import Pagination from "@mui/material/Pagination";
-import {usePagination} from "../components/layout/pagination";
+import {usePagination} from "../utils/pagination";
 import Modal from "../components/department/modal";
 import api from "../api";
+import {useSelector} from "react-redux";
 
 const Position = () => {
     const [id, setId] = useState('')
@@ -65,11 +66,11 @@ const Position = () => {
             api.position.list(pagination).then((list) => {
                 setListPosition(list.data.positions || [])
             }).catch((error) => {
-                navigate("/login")
+                
                 console.error(error)
             })
         }).catch((error) => {
-            navigate("/login")
+            
             console.error(error)
         })
     }

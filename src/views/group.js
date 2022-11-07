@@ -19,7 +19,7 @@ import ModalGroup from "../components/group/modal";
 import {useNavigate} from "react-router-dom";
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
-import {usePagination} from "../components/layout/pagination";
+import {usePagination} from "../utils/pagination";
 import api from '../api'
 
 
@@ -58,18 +58,17 @@ const Group = () => {
             }
         }
     }
-
     const getGroupList = () => {
         api.group.amount().then((res) => {
             pagination.amountChange(res.data.amount)
-            api.group.list(...pagination).then((list) => {
+            api.group.list(pagination).then((list) => {
                 setListGroup(list.data.groups || [])
             }).catch((error) => {
-                navigate("/")
+                
                 console.error(error)
             })
         }).catch((error) => {
-            navigate("/")
+            
             console.error(error)
         })
     }

@@ -22,7 +22,7 @@ import ModalDepartmetn from "../components/department/modal";
 import Joi from "joi";
 import {useNavigate} from "react-router-dom";
 import Pagination from "@mui/material/Pagination";
-import {usePagination} from "../components/layout/pagination" ;
+import {usePagination} from "../utils/pagination" ;
 import api from "../api";
 
 
@@ -67,10 +67,11 @@ const Department = () => {
             api.department.list(pagination).then((list) => {
                 setListDeapartment(list.data.departments || [])
             }).catch((error) => {
+                
                 console.error(error)
             })
         }).catch((error) => {
-            navigate("/")
+            
             console.error(error)
         })
     }

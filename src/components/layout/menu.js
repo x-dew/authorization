@@ -1,10 +1,11 @@
-import React, {useEffect} from "react";
+import React from "react";
 import '../../assets/styles/menu.css'
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Badge from '@mui/material/Badge';
+import {Link} from 'react-router-dom';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import MailIcon from '@mui/icons-material/Mail';
@@ -14,8 +15,10 @@ import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import LocalLibraryIcon from '@mui/icons-material/LocalLibrary';
 import {useNavigate} from "react-router-dom";
 import '../../assets/styles/listUser.css'
-import Link from '@mui/material/Link';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import {useDispatch, useSelector} from "react-redux";
+import {clearAuth} from "../../store/auth";
+
 
 
 const MenuPage = () => {
@@ -29,6 +32,9 @@ const MenuPage = () => {
     const handleProfileMenuOpen = (event) => {
         setAnchorEl(event.currentTarget);
     };
+
+    const token = useSelector((state) => state.auth.token)
+    const dispatch = useDispatch()
 
     const handleMobileMenuClose = () => {
         setMobileMoreAnchorEl(null);
@@ -62,8 +68,8 @@ const MenuPage = () => {
                 handleMenuClose()
             }}>Главная</MenuItem>
             <MenuItem style={{color: 'red'}} onClick={() => {
-                localStorage.setItem('access_token', '')
-                navigate("login");
+                dispatch(clearAuth())
+                navigate("/login");
                 handleMenuClose()
             }}>Выход</MenuItem>
         </Menu>
@@ -128,18 +134,18 @@ const MenuPage = () => {
             <AppBar position="static">
                 <Toolbar>
                     <Box className='menuHeader' sx={{display: {xs: 'none', md: 'flex'}}}>
-                        {localStorage.getItem('token') !== '' ? <div className='linkAdditional'>
+                        {token !==  '' ? <div className='linkAdditional'>
                             <div style={{display: 'flex'}}>
-                                <Link rel="stylesheet" href='/group' className='groupMenu additionalMenu'>
+                                <Link rel="stylesheet" to='/group' className='groupMenu additionalMenu'>
                                     <p>Группа</p>
                                     <GroupIcon/>
                                 </Link>
-                                <Link rel="stylesheet" href='/department' className='departmentMenu additionalMenu'>
+                                <Link rel="stylesheet" to='/department' className='departmentMenu additionalMenu'>
                                     <p>Департамент</p>
                                     <LibraryBooksIcon/>
                                 </Link>
-                                <Link rel="stylesheet" href='/position' className='positionMenu additionalMenu'>
-                                    <p>Дожностить</p>
+                                <Link rel="stylesheet" to='/position' className='positionMenu additionalMenu'>
+                                    <p>Должность</p>
                                     <LocalLibraryIcon/>
                                 </Link>
                             </div>
