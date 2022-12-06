@@ -1,10 +1,10 @@
 import React, {useReducer, useState} from "react";
 import '../assets/styles/login.css'
+import '../assets/styles/loading.css'
 import {reduce, signIn} from '../reduce'
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import {useNavigate} from "react-router-dom";
-import CircularProgress from "@mui/material/CircularProgress";
 import api from '../api'
 import {useDispatch} from 'react-redux'
 import {setAuth} from '../store/auth'
@@ -15,7 +15,6 @@ const Login = () => {
     const dispatch = useDispatch()
     const [authorization, dispatchAuthorization] = useReducer(reduce, signIn)
     const [errorAxios, setErrorAxios] = useState('')
-    const [adminPage, setAdminPage] = useState('1')
     const navigate = useNavigate();
 
     const value = (e) => {
@@ -26,24 +25,19 @@ const Login = () => {
             }
         })
     }
-    const getAxios = () => {
-        const data = {
-            login: authorization.login,
-            pwd: authorization.pwd,
-        }
-        api.login.signin(data).then((response) => {
+    const getUser = () => {
+        api.login.signin(authorization).then((response) => {
                 dispatch(setAuth(response.data.auth))
                 dispatch(setLogin(response.data.user))
                 setErrorAxios('')
                 navigate("/");
-                setAdminPage('1')
             }
         ).catch((error) => {
             console.log(error);
             setErrorAxios('error')
-            setAdminPage('1')
         });
     }
+
 
     return (
         <div className='login'>
@@ -61,26 +55,23 @@ const Login = () => {
                 <TextField
                     className=' input'
                     onChange={(e) => value(e)}
-                    id="outlined-basic"
+                    id="outlined-basic_one"
                     label="Логин"
                     variant="outlined"
                     name='login'/>
                 <TextField
                     className=' input'
                     onChange={(e) => value(e)}
-                    id="outlined-basic"
+                    id="outlined-basic_two"
                     label="Пароль"
                     variant="outlined"
                     name='pwd'
                     type="password"/>
             </Box>
-
-            {adminPage === '0' ? <CircularProgress color="success"/> : ''}
             <div className='buttonAuthorization'>
                 <button
                     onClick={() => {
-                        setAdminPage('0')
-                        getAxios()
+                        getUser()
                     }}
                     className='button'
                     style={{cursor: 'pointer'}}

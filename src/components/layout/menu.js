@@ -33,7 +33,6 @@ const MenuPage = () => {
         setAnchorEl(event.currentTarget);
     };
 
-    const token = useSelector((state) => state.auth.token)
     const dispatch = useDispatch()
 
     const handleMobileMenuClose = () => {
@@ -134,9 +133,9 @@ const MenuPage = () => {
             <AppBar position="static">
                 <Toolbar>
                     <Box className='menuHeader' sx={{display: {xs: 'none', md: 'flex'}}}>
-                        {token !==  '' ? <div className='linkAdditional'>
+                        <div className='linkAdditional'>
                             <div style={{display: 'flex'}}>
-                                <Link rel="stylesheet" to='/group' className='groupMenu additionalMenu'>
+                                <Link rel="stylesheet" to='/group'  className='groupMenu additionalMenu'>
                                     <p>Группа</p>
                                     <GroupIcon/>
                                 </Link>
@@ -160,7 +159,7 @@ const MenuPage = () => {
                             >
                                 <AccountCircleIcon/>
                             </IconButton>
-                        </div> : ''}
+                        </div>
                     </Box>
                 </Toolbar>
             </AppBar>

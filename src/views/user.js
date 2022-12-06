@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import '../assets/styles/listUser.css'
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -10,19 +10,15 @@ import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import ModalUser from "../components/user/modalUser/modalUser";
-import {useNavigate} from "react-router-dom";
 import Pagination from '@mui/material/Pagination';
 import {usePagination} from "../utils/pagination";
-import {useSelector} from "react-redux";
 import api from "../api";
 
 const User = () => {
     const [user, setUser] = useState([])
     const [open, setOpen] = useState(false);
     const [id, setId] = useState('')
-    const [error, setError] = useState('')
     const pagination = usePagination()
-    const navigate = useNavigate()
 
     const handleOpen = (id) => {
         setOpen(true)
@@ -39,7 +35,7 @@ const User = () => {
             })
         }).catch((error) => {
             console.error(error)
-            navigate("/login")
+
         })
     }
     useEffect(getListUser, [pagination.page])
@@ -75,12 +71,14 @@ const User = () => {
                 <div className='userBlockHeader'>
                     <h2>Пользователи</h2>
                     <Stack direction="row" spacing={2}>
-                        <Button onClick={() => handleOpen()} variant="contained" color="success">
+                        <Button onClick={() => {
+                            setId(null)
+                            handleOpen()
+                        }} variant="contained" color="success">
                             Добавить
                         </Button>
                     </Stack>
                 </div>
-                {error === 'error' ? <h2 className='error'>Ошибка при получение списка</h2> :
                     <div className='userTable'>
                         <TableContainer component={Paper}>
                             <Table sx={{minWidth: 650}} aria-label="simple table">
@@ -109,8 +107,7 @@ const User = () => {
                                 </TableBody>
                             </Table>
                         </TableContainer>
-                    </div>}
-
+                    </div>
                 <div className='pagination_list'>
                     <Stack spacing={2}>
                         <Pagination
@@ -122,11 +119,10 @@ const User = () => {
                     </Stack>
                 </div>
             </div>
-            <ModalUser
+            {open === true ? <ModalUser
                 id={id}
-                open={open}
                 onChange={onChange}
-            />
+            /> : ''}
         </div>
     )
 }

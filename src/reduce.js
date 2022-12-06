@@ -1,8 +1,8 @@
 import React from "react";
 
 export const  signIn = {
-    login:'admin',
-    pwd:'admin'
+    login:'',
+    pwd:''
 }
 
 export const reduce = (state, action) => {

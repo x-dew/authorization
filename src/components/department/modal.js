@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react'
+import React, {useEffect, useState} from 'react'
 import '../../assets/styles/modalDepartment.css'
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -9,8 +9,6 @@ import TextField from '@mui/material/TextField';
 import Stack from "@mui/material/Stack";
 import ClearIcon from '@mui/icons-material/Clear';
 import Joi from "joi";
-import axios from "axios";
-import {useState} from "react";
 import api from "../../api";
 
 const style = {
@@ -39,12 +37,14 @@ const ModalDepartmetn = ({id, open, onChange}) => {
     }
 
     useEffect(() => {
-        api.department.view(id).then((res) => {
+        if (id !== null) {
+            api.department.view(id).then((res) => {
                 setDepartment({...department, id: res.data.id, name: res.data.name})
             })
-            .catch((error) => {
-                console.error(error)
-            })
+                .catch((error) => {
+                    console.error(error)
+                })
+        }
     }, [])
 
     const create = () => {

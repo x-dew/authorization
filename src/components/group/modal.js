@@ -1,10 +1,9 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Backdrop from "@mui/material/Backdrop";
 import '../../assets/styles/modalGroup.css'
 import TextField from "@mui/material/TextField";
-import axios from "axios";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import Switch from "@mui/material/Switch";
@@ -12,7 +11,6 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import {FormGroup} from "@mui/material";
 import Joi from "joi";
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import {useEffect} from "react";
 import api from '../../api'
 
 const style = {
@@ -32,7 +30,6 @@ const ModalGroup = ({id, open, onChange}) => {
     const handleClose = () => {
         onChange('close');
     };
-
 
     const [errorValidate, setErrorValidate] = useState({})
     const [errorSipPort, setErrorSipPort] = useState('')
@@ -160,13 +157,14 @@ const ModalGroup = ({id, open, onChange}) => {
 
 
     useEffect(() => {
-        api.group.view(id).then((res) => {
+        if (id !== null) {
+            api.group.view(id).then((res) => {
                 setState(res.data)
             }).catch((error) => {
-            console.error(error)
-        })
+                console.error(error)
+            })
+        }
     }, [])
-    console.log(state)
     return (
         <div className='modalParameters'>
             <Modal

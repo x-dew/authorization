@@ -4,17 +4,18 @@ export const counterSlice = createSlice({
     name: 'auth',
     initialState: {
         refresh_token: '',
-        refresh_token_expired: '',
+        refresh_token_expired: localStorage.getItem('refresh_token_expired'),
         token: '',
     },
     reducers: {
         setAuth: (state, action) => {
+            const refresh_token_expired = Date.now() + action.payload.refresh_token_expired * 1000
             state.token = action.payload.token
             state.refresh_token = action.payload.refresh_token
-            state.refresh_token_expired = action.payload.refresh_token_expired
+            state.refresh_token_expired = refresh_token_expired
 
             localStorage.setItem('token', action.payload.token)
-            localStorage.setItem('refresh_token_expired', action.payload.refresh_token_expired)
+            localStorage.setItem('refresh_token_expired', refresh_token_expired)
             localStorage.setItem('refresh_token', action.payload.refresh_token)
         },
         clearAuth: (state, action) => {

@@ -41,13 +41,15 @@ const ModalPosition = ({id, open, onChange}) => {
     };
 
     useEffect(() => {
-        api.position.view(id).then((res) => {
-            setPosition({...position, id: res.data.id, name: res.data.name})
-            console.log(res)
-        })
-            .catch((error) => {
-                console.error(error)
+        if(id !== null){
+            api.position.view(id).then((res) => {
+                setPosition({...position, id: res.data.id, name: res.data.name})
+                console.log(res)
             })
+                .catch((error) => {
+                    console.error(error)
+                })
+        }
     }, [])
 
     const create = () => {
@@ -123,7 +125,6 @@ const ModalPosition = ({id, open, onChange}) => {
         }
 
     }
-
     const destroy = () => {
         api.position.destroy(id).then((res) => {
             onChange('destroy')

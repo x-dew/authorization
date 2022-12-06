@@ -27,10 +27,8 @@ const Group = () => {
     const [listGroup, setListGroup] = useState([])
     const [open, setOpen] = useState(false);
     const [id, setId] = useState(0)
-
     const navigate = useNavigate()
     const pagination = usePagination()
-
     const styleText = (value, text) => value === text ? {color: 'red'} : value === null ? {color: ''} : {color: 'green'}
     const handleOpen = (id) => {
         setId(id || null)
@@ -64,11 +62,9 @@ const Group = () => {
             api.group.list(pagination).then((list) => {
                 setListGroup(list.data.groups || [])
             }).catch((error) => {
-                
                 console.error(error)
             })
         }).catch((error) => {
-            
             console.error(error)
         })
     }
@@ -168,7 +164,6 @@ const Group = () => {
                     />
                 </Stack>
             </div>
-
             {open === true ?
                 <ModalGroup
                     open={open}
